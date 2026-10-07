@@ -3,6 +3,8 @@ import { THEMES, DRAWINGS } from './drawings.js';
 import { Board, drawingSvg } from './board.js';
 import { sfx, say, initVoice, preloadVoice } from './sound.js';
 import { confetti } from './confetti.js';
+import { Tracer } from './trace.js';
+import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
 const store = {
@@ -13,16 +15,20 @@ const state = {
   lang: store.get('lang', 'es'),
   stars: store.get('stars', 0),
   done: store.get('done', []),
+  traced: store.get('traced', []),
 };
 const t = obj => obj[state.lang] ?? obj.es;
 const app = document.getElementById('app');
 let board = null;
 let idleTimer = null;
+let tracer = null;
 
 // ---------- utilidades ----------
 const h = (html) => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; };
 function go(screen, ...args) {
   clearTimeout(idleTimer);
+  tracer?.destroy(); tracer = null;
+  document.querySelectorAll('.modal, .counting').forEach(m => m.remove());
   app.innerHTML = '';
   SCREENS[screen](...args);
 }
@@ -45,13 +51,14 @@ const SCREENS = {
         <div class="cards">
           <button class="card c1" data-go="themes"><span class="emo">🖍️</span><span class="lbl">${t(UI.color)}</span></button>
           <button class="card c2" data-go="free"><span class="emo">🎨</span><span class="lbl">${t(UI.free)}</span></button>
+          <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
           <button class="card c3" data-go="album"><span class="emo">🖼️</span><span class="lbl">${t(UI.album)}</span></button>
         </div>
       </div>`);
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     onTap(s.querySelector('.flag'), () => {
@@ -173,6 +180,69 @@ const SCREENS = {
     await board.load(d);
   },
 
+  learn() {
+    const s = h(`
+      <div class="screen learn">
+        <header class="bar"><button class="back">🏠</button></header>
+        <div class="cards">
+          <button class="card k1" data-kind="num"><span class="big">123</span><span class="lbl">${t(UI.nums)}</span></button>
+          <button class="card k2" data-kind="upper"><span class="big">ABC</span><span class="lbl">${t(UI.upper)}</span></button>
+          <button class="card k3" data-kind="lower"><span class="big">abc</span><span class="lbl">${t(UI.lower)}</span></button>
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.card').forEach(b => onTap(b, () => {
+      const k = b.dataset.kind;
+      say(t({ num: UI.nums, upper: UI.upper, lower: UI.lower }[k]), state.lang);
+      go('chars', k);
+    }));
+  },
+
+  chars(kind) {
+    const list = kind === 'num' ? [...Array(11).keys()].map(String) : alphabet(state.lang, kind === 'lower');
+    const s = h(`
+      <div class="screen chars">
+        <header class="bar"><button class="back">⬅️</button></header>
+        <div class="grid letters ${kind}">
+          ${list.map((c, i) => `<button class="tile ch" data-c="${c}" style="--bg:hsl(${(i * 37) % 360} 90% 88%)"><span>${c}</span>${state.traced.includes(kind + ':' + c) ? '<i class="badge">⭐</i>' : ''}</button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('learn'));
+    s.querySelectorAll('.ch').forEach(b => onTap(b, () => go('trace', kind, b.dataset.c)));
+  },
+
+  trace(kind, ch) {
+    const list = kind === 'num' ? [...Array(11).keys()].map(String) : alphabet(state.lang, kind === 'lower');
+    const s = h(`
+      <div class="screen trace">
+        <aside class="tools">
+          <button class="back">⬅️</button>
+          <button class="again">🔁</button>
+          <button class="next">➡️</button>
+        </aside>
+        <main class="trace-wrap"><canvas class="trace-cv"></canvas></main>
+      </div>`);
+    app.append(s);
+    const speakIt = () => say(nameOf(kind, ch), state.lang);
+    speakIt();
+    const next = () => go('trace', kind, list[(list.indexOf(ch) + 1) % list.length]);
+    onTap(s.querySelector('.back'), () => go('chars', kind));
+    onTap(s.querySelector('.again'), () => go('trace', kind, ch));
+    onTap(s.querySelector('.next'), next);
+    tracer = new Tracer(s.querySelector('.trace-cv'), glyphStrokes(kind, ch), {
+      onDone: () => {
+        const id = kind + ':' + ch;
+        if (!state.traced.includes(id)) { state.traced.push(id); store.set('traced', state.traced); }
+        state.stars++; store.set('stars', state.stars);
+        s.querySelector('.next').classList.add('pulse');
+        if (kind === 'num') countUp(+ch).then(() => cheer());
+        else { speakIt(); setTimeout(cheer, 900); }
+      },
+    });
+  },
+
   album() {
     const items = store.get('album', []);
     const s = h(`
@@ -192,6 +262,37 @@ const SCREENS = {
     }));
   },
 };
+
+// ---------- números y letras ----------
+function nameOf(kind, ch) {
+  if (kind === 'num') return NUMBER_NAMES[state.lang][+ch];
+  return LETTER_NAMES[state.lang][ch.toUpperCase()] ?? ch;
+}
+
+const COUNT_EMOJI = ['🦄', '🐠', '🦖', '🚜', '🐱', '🌸', '🦈', '🚓', '🐙', '⭐', '🍓'];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+async function countUp(n) {
+  const row = h(`<div class="counting"></div>`);
+  document.body.append(row);
+  const e = COUNT_EMOJI[Math.floor(Math.random() * COUNT_EMOJI.length)];
+  if (n === 0) { row.innerHTML = '<span class="cnt">🙈</span>'; say(NUMBER_NAMES[state.lang][0], state.lang); await wait(1200); }
+  for (let i = 1; i <= n; i++) {
+    const it = h(`<span class="cnt">${e}<b>${i}</b></span>`);
+    row.append(it);
+    sfx.pop(i);
+    say(NUMBER_NAMES[state.lang][i], state.lang);
+    await wait(950);
+  }
+  await wait(500);
+  row.classList.add('bye');
+  setTimeout(() => row.remove(), 600);
+}
+
+function cheer() {
+  sfx.fanfare();
+  confetti(120);
+  say(PRAISE[state.lang][Math.floor(Math.random() * PRAISE[state.lang].length)], state.lang);
+}
 
 // ---------- celebración ----------
 function celebrate(d) {

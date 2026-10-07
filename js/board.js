@@ -115,7 +115,7 @@ export class Board {
     e.preventDefault();
     if (this.pointer !== null) return;           // ignora el segundo dedo / la palma
     this.pointer = e.pointerId;
-    this.paint.setPointerCapture?.(e.pointerId);
+    try { this.paint.setPointerCapture(e.pointerId); } catch {}
     const p = this.local(e);
     if (this.tool === 'fill') { this.fillAt(p); return; }
     if (this.tool === 'stamp') { this.stampAt(p); return; }

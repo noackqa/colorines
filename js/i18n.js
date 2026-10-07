@@ -35,6 +35,10 @@ export const UI = {
   again:  { es: 'Otro',         en: 'Another',    de: 'Noch eins' },
   home:   { es: 'Casa',         en: 'Home',       de: 'Startseite' },
   empty:  { es: 'Aún no hay dibujos', en: 'No drawings yet', de: 'Noch keine Bilder' },
+  learn:  { es: 'Números y letras', en: 'Numbers and letters', de: 'Zahlen und Buchstaben' },
+  nums:   { es: 'Números', en: 'Numbers', de: 'Zahlen' },
+  upper:  { es: 'Mayúsculas', en: 'Capital letters', de: 'Großbuchstaben' },
+  lower:  { es: 'Minúsculas', en: 'Small letters', de: 'Kleinbuchstaben' },
 };
 
 export const TOOLS = {

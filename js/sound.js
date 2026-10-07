@@ -84,6 +84,9 @@ export function preloadVoice(lang) {
 
 async function playClip([file, start, end]) {
   const buf = await buffer(file);
+  // Margen para no cortar consonantes suaves (f, s, z) al principio o al final.
+  start = Math.max(0, start - 0.08);
+  end = Math.min(buf.duration, end + 0.12);
   const c = ac();
   const d = buf.getChannelData(0), a = Math.floor(start * buf.sampleRate), b = Math.min(d.length, Math.floor(end * buf.sampleRate));
   let peak = 0.01;
