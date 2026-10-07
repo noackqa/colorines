@@ -39,6 +39,9 @@ export const THEMES = [
   { id: 'works', emoji: '🚜', bg: '#FFF0B3', es: 'Tractores', en: 'Tractors', de: 'Traktoren' },
   { id: 'rescue', emoji: '🚓', bg: '#D6DCFF', es: 'Emergencias', en: 'Rescue', de: 'Rettung' },
   { id: 'animals', emoji: '🐱', bg: '#F5E3CC', es: 'Animales', en: 'Animals', de: 'Tiere' },
+  { id: 'nature', emoji: '🌳', bg: '#DDF5D0', es: 'Naturaleza', en: 'Nature', de: 'Natur' },
+  { id: 'school', emoji: '🏫', bg: '#FFE6C7', es: 'El cole', en: 'School', de: 'Schule' },
+  { id: 'fairy', emoji: '🧚', bg: '#EBDDFF', es: 'Cuentos', en: 'Fairy tales', de: 'Märchen' },
 ];
 
 export const DRAWINGS = [
@@ -325,4 +328,30 @@ export const DRAWINGS = [
       <circle cx="300" cy="320" r="20"/><circle cx="500" cy="320" r="20"/>
       ${ground(560)}`,
   },
+
+  // ---------------- IMÁGENES (PNG líneas negras, 1200×900) ----------------
+  { id: 'img-unicornio', theme: 'unicorn', img: 'img/unicornio.png', es: 'unicornio', en: 'unicorn', de: 'Einhorn' },
+  { id: 'img-hada', theme: 'fairy', img: 'img/hada.png', es: 'hada', en: 'fairy', de: 'Fee' },
+  { id: 'img-dragon', theme: 'fairy', img: 'img/dragon.png', es: 'dragón', en: 'dragon', de: 'Drache' },
+  { id: 'img-castillo', theme: 'fairy', img: 'img/castillo.png', es: 'castillo', en: 'castle', de: 'Schloss' },
+  { id: 'img-ballena', theme: 'sea', img: 'img/ballena.png', es: 'ballena', en: 'whale', de: 'Wal' },
+  { id: 'img-pulpo', theme: 'sea', img: 'img/pulpo.png', es: 'pulpo', en: 'octopus', de: 'Krake' },
+  { id: 'img-delfin', theme: 'sea', img: 'img/delfin.png', es: 'delfín', en: 'dolphin', de: 'Delfin' },
+  { id: 'img-tortuga', theme: 'sea', img: 'img/tortuga.png', es: 'tortuga', en: 'turtle', de: 'Schildkröte' },
+  { id: 'img-volcan', theme: 'volcano', img: 'img/volcan.png', es: 'volcán con palmeras', en: 'volcano with palm trees', de: 'Vulkan mit Palmen' },
+  { id: 'img-dino-volcan', theme: 'volcano', img: 'img/dino-volcan.png', es: 'dinosaurio y volcán', en: 'dinosaur and volcano', de: 'Dino und Vulkan' },
+  { id: 'img-tiranosaurio', theme: 'dino', img: 'img/tiranosaurio.png', es: 'tiranosaurio', en: 'T-rex', de: 'T-Rex' },
+  { id: 'img-triceratops', theme: 'dino', img: 'img/triceratops.png', es: 'triceratops', en: 'triceratops', de: 'Triceratops' },
+  { id: 'img-tractor', theme: 'works', img: 'img/tractor.png', es: 'tractor', en: 'tractor', de: 'Traktor' },
+  { id: 'img-excavadora', theme: 'works', img: 'img/excavadora.png', es: 'excavadora', en: 'digger', de: 'Bagger' },
+  { id: 'img-camion-volquete', theme: 'works', img: 'img/camion-volquete.png', es: 'camión', en: 'dump truck', de: 'Kipplaster' },
+  { id: 'img-vaca-granja', theme: 'animals', img: 'img/vaca-granja.png', es: 'vaca', en: 'cow', de: 'Kuh' },
+  { id: 'img-cerdo-y-gallina', theme: 'animals', img: 'img/cerdo-y-gallina.png', es: 'cerdo y gallina', en: 'pig and hen', de: 'Schwein und Huhn' },
+  { id: 'img-arbol', theme: 'nature', img: 'img/arbol.png', es: 'árbol', en: 'tree', de: 'Baum' },
+  { id: 'img-flores', theme: 'nature', img: 'img/flores.png', es: 'flores', en: 'flowers', de: 'Blumen' },
+  { id: 'img-bosque', theme: 'nature', img: 'img/bosque.png', es: 'bosque', en: 'forest', de: 'Wald' },
+  { id: 'img-colegio', theme: 'school', img: 'img/colegio.png', es: 'colegio', en: 'school', de: 'Schule' },
+  { id: 'img-autobus', theme: 'school', img: 'img/autobus.png', es: 'autobús', en: 'school bus', de: 'Schulbus' },
+  { id: 'img-aula', theme: 'school', img: 'img/aula.png', es: 'clase', en: 'classroom', de: 'Klassenzimmer' },
+  { id: 'img-camino-colegio', theme: 'school', img: 'img/camino-colegio.png', es: 'camino al cole', en: 'walk to school', de: 'Schulweg' },
 ];

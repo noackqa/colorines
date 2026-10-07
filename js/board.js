@@ -48,15 +48,16 @@ export class Board {
     el.addEventListener('pointercancel', e => this.up(e));
   }
 
-  async load(inner) {
+  // drawing: null (libre), { svg } (dibujo vectorial) o { img } (imagen PNG de líneas negras sobre blanco)
+  async load(drawing) {
     this.undoStack = [];
     this.pctx.clearRect(0, 0, W, H);
     this.lctx.clearRect(0, 0, W, H);
-    if (!inner) { this.mode = 'free'; this.wall = null; this.samples = null; return; }
+    if (!drawing) { this.mode = 'free'; this.wall = null; this.samples = null; return; }
     this.mode = 'color';
 
     const img = new Image();
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawingSvg(inner, W, H));
+    img.src = drawing.img ?? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(drawingSvg(drawing.svg, W, H));
     await img.decode();
     const m = mk(W, H).getContext('2d', { willReadFrequently: true });
     m.drawImage(img, 0, 0, W, H);
@@ -77,7 +78,30 @@ export class Board {
     }
     this.lctx.putImageData(L, 0, 0);
     this.wall = wall;
-    this.samples = samples;
+    // En una imagen todo es opaco: el "fondo" son las zonas que tocan el borde y no cuentan para el progreso.
+    this.samples = drawing.img ? this.innerSamples(wall) : samples;
+  }
+
+  innerSamples(wall) {
+    const bg = new Uint8Array(W * H), stack = [];
+    for (let x = 0; x < W; x++) stack.push(x, (H - 1) * W + x);
+    for (let y = 0; y < H; y++) stack.push(y * W, y * W + W - 1);
+    while (stack.length) {
+      const i = stack.pop();
+      if (bg[i] || wall[i]) continue;
+      bg[i] = 1;
+      const x = i % W;
+      if (x > 0) stack.push(i - 1);
+      if (x < W - 1) stack.push(i + 1);
+      if (i >= W) stack.push(i - W);
+      if (i < W * (H - 1)) stack.push(i + W);
+    }
+    const out = [];
+    for (let y = 0; y < H; y += 6) for (let x = 0; x < W; x += 6) {
+      const i = y * W + x;
+      if (!wall[i] && !bg[i]) out.push(i);
+    }
+    return out;
   }
 
   // ---------- coordenadas ----------

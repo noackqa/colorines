@@ -95,7 +95,7 @@ const SCREENS = {
       <div class="screen drawings" style="--bg:${th.bg}">
         <header class="bar"><button class="back">⬅️</button><span class="heading">${th.emoji}</span></header>
         <div class="grid pics">
-          ${list.map(d => `<button class="pic" data-id="${d.id}">${drawingSvg(d.svg, '100%', '100%')}${state.done.includes(d.id) ? '<span class="badge">⭐</span>' : ''}</button>`).join('')}
+          ${list.map(d => `<button class="pic" data-id="${d.id}">${d.img ? `<img src="${d.img}" alt="" loading="lazy">` : drawingSvg(d.svg, '100%', '100%')}${state.done.includes(d.id) ? '<span class="badge">⭐</span>' : ''}</button>`).join('')}
         </div>
       </div>`);
     app.append(s);
@@ -170,7 +170,7 @@ const SCREENS = {
       if (d && !celebrated && board.coverage() > 0.88) { celebrated = true; setTimeout(() => celebrate(d), 400); }
     };
     resetIdle();
-    await board.load(d?.svg ?? null);
+    await board.load(d);
   },
 
   album() {

@@ -1,10 +1,12 @@
 // Funciona sin internet: guarda la app la primera vez y luego sirve desde caché.
-const VERSION = 'colorines-v2';
+const VERSION = 'colorines-v4';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/board.js', 'js/drawings.js', 'js/i18n.js', 'js/sound.js', 'js/confetti.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png', 'audio/index.json',
   'audio/de-a1.mp3', 'audio/de-a2.mp3', 'audio/de-b1.mp3', 'audio/de-b2.mp3', 'audio/de-b3.mp3', 'audio/de-c1.mp3', 'audio/de-c2.mp3', 'audio/de-c3.mp3', 'audio/en-a1.mp3', 'audio/en-a2.mp3', 'audio/en-b1.mp3', 'audio/en-b2.mp3', 'audio/en-b3.mp3', 'audio/en-c1.mp3', 'audio/en-c2.mp3', 'audio/en-c3.mp3', 'audio/es-a1.mp3', 'audio/es-a2.mp3', 'audio/es-b1.mp3', 'audio/es-b2.mp3', 'audio/es-b3.mp3', 'audio/es-c1.mp3', 'audio/es-c2.mp3', 'audio/es-c3.mp3',
+  'audio/de-d1.mp3', 'audio/de-d2.mp3', 'audio/de-d3.mp3', 'audio/en-d1.mp3', 'audio/en-d2.mp3', 'audio/en-d3.mp3', 'audio/es-d1.mp3', 'audio/es-d2.mp3', 'audio/es-d3.mp3',
+  'img/arbol.png', 'img/aula.png', 'img/autobus.png', 'img/ballena.png', 'img/bosque.png', 'img/camino-colegio.png', 'img/camion-volquete.png', 'img/castillo.png', 'img/cerdo-y-gallina.png', 'img/colegio.png', 'img/delfin.png', 'img/dino-volcan.png', 'img/dragon.png', 'img/excavadora.png', 'img/flores.png', 'img/hada.png', 'img/pulpo.png', 'img/tiranosaurio.png', 'img/tortuga.png', 'img/tractor.png', 'img/triceratops.png', 'img/unicornio.png', 'img/vaca-granja.png', 'img/volcan.png',
 ];
 
 self.addEventListener('install', e => {
