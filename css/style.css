@@ -47,8 +47,8 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 }
 .card .emo { font-size: clamp(70px, 11vw, 130px); animation: wiggle 3s ease-in-out infinite; }
 .card .lbl { font-size: clamp(18px, 2.6vw, 32px); font-weight: 800; line-height: 1.1; text-align: center; padding: 0 10px; }
-.c1 { background: var(--card1); } .c2 { background: var(--card2); } .c3 { background: var(--card3); } .c4 { background: #9BE7A6; }
-.c2 .emo { animation-delay: .5s; } .c3 .emo { animation-delay: 1s; } .c4 .emo { animation-delay: 1.5s; }
+.c1 { background: var(--card1); } .c2 { background: var(--card2); } .c3 { background: var(--card3); } .c4 { background: #9BE7A6; } .c5 { background: #C7A6FF; }
+.c2 .emo { animation-delay: .5s; } .c3 .emo { animation-delay: 1s; } .c4 .emo { animation-delay: 1.5s; } .c5 .emo { animation-delay: 2s; }
 @keyframes wiggle { 0%, 80%, 100% { transform: rotate(0); } 85% { transform: rotate(-10deg) scale(1.08); } 92% { transform: rotate(10deg) scale(1.08); } }
 
 /* ---------- temas y dibujos ---------- */
@@ -127,3 +127,34 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 .counting .cnt b { position: absolute; top: -6px; right: -6px; font-size: 22px; background: #fff; border-radius: 50%; width: 34px; height: 34px; display: grid; place-items: center; box-shadow: var(--shadow); }
 .counting.bye { animation: fade .5s reverse forwards; }
 @media (orientation: portrait) { .trace { flex-direction: column; } .trace .tools { flex-direction: row; } }
+
+/* ---------- sumas y restas ---------- */
+.sums { background: #FFF7E8; }
+.progress { display: flex; gap: 6px; font-size: clamp(28px, 4vw, 44px); }
+.pstar { filter: grayscale(1) opacity(.25); transition: filter .3s, transform .3s; }
+.pstar.on { filter: none; transform: scale(1.15); }
+.lvl { font-size: 40px; }
+.eq { flex: 1; display: flex; align-items: center; justify-content: center; gap: clamp(10px, 2vw, 28px); min-height: 0; }
+.eq .col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.grp { display: grid; grid-template-columns: repeat(var(--cols, 3), auto); gap: 6px; background: #fff; padding: 12px; border-radius: 26px; box-shadow: var(--shadow); }
+.grp.num-only { padding: 12px 26px; }
+.it { font-size: clamp(46px, 6.4vw, 88px); line-height: 1.1; background: none; box-shadow: none; padding: 2px; border-radius: 14px; }
+.it.counted { background: #FFF0B3; }
+.it.gone { animation: swim .9s ease-in forwards; }
+@keyframes swim { to { transform: translate(40px, -30px) rotate(20deg) scale(.7); opacity: .2; } }
+.it.bounce { animation: bounce .45s ease; }
+.it.gone.bounce { animation: none; opacity: .2; transform: translate(40px, -30px) rotate(20deg) scale(.7); }
+@keyframes bounce { 40% { transform: translateY(-14px) scale(1.15); } }
+.lbl-n, .bignum { font-size: clamp(32px, 4.5vw, 60px); font-weight: 800; color: var(--ink); }
+.bignum { display: block; min-width: 1.4em; text-align: center; }
+.op { font-size: clamp(48px, 7vw, 96px); font-weight: 800; color: #A259FF; }
+.ans { font-size: clamp(56px, 8vw, 110px); font-weight: 800; min-width: 1.4em; text-align: center; background: #fff; border-radius: 30px; padding: 0 18px; box-shadow: var(--shadow); color: #C9BEE6; }
+.ans.done { color: #2FBF4E; animation: pop .5s cubic-bezier(.3, 1.6, .5, 1); }
+.opts { display: flex; justify-content: center; gap: clamp(16px, 3vw, 40px); padding-bottom: 10px; }
+.opt { width: clamp(100px, 14vw, 170px); height: clamp(100px, 14vw, 170px); font-size: clamp(56px, 8vw, 100px); font-weight: 800; border-radius: 34px; }
+.opt:nth-child(1) { background: #FFD6F2; } .opt:nth-child(2) { background: #CFE6FF; } .opt:nth-child(3) { background: #D9F5C5; }
+.opt.wrong { animation: shake .4s; opacity: .35; }
+.opt.right { background: #9BE7A6; transform: scale(1.1); }
+@keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
+.row5 { font-size: 40px; letter-spacing: 4px; }
+@media (orientation: portrait) { .eq { flex-wrap: wrap; } }

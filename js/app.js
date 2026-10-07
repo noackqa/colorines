@@ -1,7 +1,7 @@
 import { LANGS, FLAGS, LANG_NAME, COLORS, PRAISE, UI, TOOLS } from './i18n.js';
 import { THEMES, DRAWINGS } from './drawings.js';
 import { Board, drawingSvg } from './board.js';
-import { sfx, say, initVoice, preloadVoice } from './sound.js';
+import { sfx, say, sayQueue, initVoice, preloadVoice } from './sound.js';
 import { confetti } from './confetti.js';
 import { Tracer } from './trace.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
@@ -16,6 +16,8 @@ const state = {
   stars: store.get('stars', 0),
   done: store.get('done', []),
   traced: store.get('traced', []),
+  mathLevel: store.get('mathLevel', 1),
+  perfectRounds: store.get('perfectRounds', 0),
 };
 const t = obj => obj[state.lang] ?? obj.es;
 const app = document.getElementById('app');
@@ -52,13 +54,14 @@ const SCREENS = {
           <button class="card c1" data-go="themes"><span class="emo">🖍️</span><span class="lbl">${t(UI.color)}</span></button>
           <button class="card c2" data-go="free"><span class="emo">🎨</span><span class="lbl">${t(UI.free)}</span></button>
           <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
+          <button class="card c5" data-go="math"><span class="emo">➕</span><span class="lbl">${t(UI.math)}</span></button>
           <button class="card c3" data-go="album"><span class="emo">🖼️</span><span class="lbl">${t(UI.album)}</span></button>
         </div>
       </div>`);
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     onTap(s.querySelector('.flag'), () => {
@@ -243,6 +246,139 @@ const SCREENS = {
     });
   },
 
+  math() {
+    const s = h(`
+      <div class="screen learn mathmenu">
+        <header class="bar"><button class="back">🏠</button></header>
+        <div class="cards">
+          <button class="card k1" data-mode="add"><span class="big">＋</span><span class="lbl">${t(UI.add)}</span></button>
+          <button class="card k2" data-mode="sub"><span class="big">－</span><span class="lbl">${t(UI.sub)}</span></button>
+          <button class="card k3" data-mode="mix"><span class="big">🎲</span><span class="lbl">${t(UI.random)}</span></button>
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.card').forEach(b => onTap(b, () => {
+      const m = b.dataset.mode;
+      say(t({ add: UI.add, sub: UI.sub, mix: UI.random }[m]), state.lang);
+      go('sums', m);
+    }));
+  },
+
+  sums(mode) {
+    const ROUND = 5;
+    const s = h(`
+      <div class="screen sums">
+        <header class="bar"><button class="back">⬅️</button><div class="progress"></div><span class="lvl"></span></header>
+        <div class="eq"></div>
+        <div class="opts"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('math'));
+    const progress = s.querySelector('.progress'), eq = s.querySelector('.eq'), opts = s.querySelector('.opts');
+    let solved = 0, mistakes = 0, last = '';
+    const drawProgress = () => {
+      progress.innerHTML = Array.from({ length: ROUND }, (_, i) => `<span class="pstar ${i < solved ? 'on' : ''}">⭐</span>`).join('');
+    };
+    drawProgress();
+
+    const next = () => {
+      let p;
+      do { p = makeProblem(mode, state.mathLevel); } while (p.key === last);
+      last = p.key;
+      show(p);
+    };
+
+    const show = (p) => {
+      const N = n => NUMBER_NAMES[state.lang][n];
+      const opWord = t(p.op === '+' ? UI.plus : UI.minus);
+      const cols = n => n <= 3 ? Math.max(1, n) : n <= 6 ? 3 : n <= 8 ? 4 : 5;
+      const items = n => Array.from({ length: n }, (_, i) => `<button class="it" data-i="${i}">${p.emoji}</button>`).join('');
+      const g2 = p.op === '+'
+        ? `<div class="grp" style="--cols:${cols(p.b)}">${items(p.b)}</div><b class="lbl-n">${p.b}</b>`
+        : `<div class="grp num-only"><span class="bignum">${p.b}</span></div>`;
+      eq.innerHTML = `
+        <div class="col"><div class="grp g1" style="--cols:${cols(p.a)}">${items(p.a)}</div><b class="lbl-n">${p.a}</b></div>
+        <div class="op">${p.op === '+' ? '+' : '−'}</div>
+        <div class="col">${g2}</div>
+        <div class="op">=</div>
+        <div class="ans">?</div>`;
+      opts.innerHTML = p.opts.map(n => `<button class="opt" data-n="${n}">${n}</button>`).join('');
+
+      // En las restas, los últimos "b" dibujos se van.
+      const all = [...eq.querySelectorAll('.it')];
+      if (p.op === '-') setTimeout(() => {
+        all.slice(p.a - p.b).forEach((el, k) => setTimeout(() => { el.classList.add('gone'); sfx.tap(); }, k * 250));
+      }, 900);
+
+      // Contar tocando.
+      let count = 0;
+      const bounce = el => { el.classList.remove('bounce'); void el.offsetWidth; el.classList.add('bounce'); };
+      all.forEach(el => el.addEventListener('click', () => {
+        bounce(el);
+        if (el.classList.contains('gone') || el.classList.contains('counted')) { sfx.tap(); return; }
+        el.classList.add('counted');
+        count++;
+        sfx.pop(count);
+        say(N(Math.min(count, 10)), state.lang);
+      }));
+
+      sayQueue([N(p.a), opWord, N(p.b)], state.lang);
+
+      let busy = false;
+      opts.querySelectorAll('.opt').forEach(b => b.addEventListener('click', async () => {
+        if (busy || b.disabled) return;
+        const n = +b.dataset.n;
+        if (n !== p.c) {
+          mistakes++;
+          b.classList.add('wrong'); b.disabled = true;
+          sfx.undo();
+          say(t(UI.howmany), state.lang);
+          all.filter(el => !el.classList.contains('gone')).forEach((el, k) => setTimeout(() => bounce(el), k * 120));
+          return;
+        }
+        busy = true;
+        b.classList.add('right');
+        const ans = eq.querySelector('.ans');
+        ans.textContent = p.c; ans.classList.add('done');
+        sfx.fanfare(); confetti(50);
+        solved++; drawProgress();
+        await sayQueue([N(p.a), opWord, N(p.b), t(UI.makes), N(p.c)], state.lang);
+        await wait(350);
+        if (!document.body.contains(s)) return;
+        if (solved < ROUND) next(); else roundDone();
+      }));
+    };
+
+    const roundDone = () => {
+      state.stars++; store.set('stars', state.stars);
+      if (mistakes === 0) {
+        state.perfectRounds++;
+        if (state.perfectRounds >= 2 && state.mathLevel < 2) { state.mathLevel = 2; state.perfectRounds = 0; }
+      }
+      store.set('mathLevel', state.mathLevel); store.set('perfectRounds', state.perfectRounds);
+      cheer();
+      confetti(160);
+      const m = h(`
+        <div class="modal">
+          <div class="win">
+            <div class="bigstar">⭐</div>
+            <div class="row5">${'⭐'.repeat(ROUND)}</div>
+            <div class="row">
+              <button class="again">🔁<span>${t(UI.again)}</span></button>
+              <button class="home">🏠<span>${t(UI.home)}</span></button>
+            </div>
+          </div>
+        </div>`);
+      setTimeout(() => { if (document.body.contains(s)) document.body.append(m); }, 700);
+      onTap(m.querySelector('.again'), () => { m.remove(); go('sums', mode); });
+      onTap(m.querySelector('.home'), () => { m.remove(); go('home'); });
+    };
+
+    s.querySelector('.lvl').textContent = state.mathLevel === 1 ? '🐣' : '🦄';
+    next();
+  },
+
   album() {
     const items = store.get('album', []);
     const s = h(`
@@ -292,6 +428,21 @@ function cheer() {
   sfx.fanfare();
   confetti(120);
   say(PRAISE[state.lang][Math.floor(Math.random() * PRAISE[state.lang].length)], state.lang);
+}
+
+// ---------- sumas y restas ----------
+const rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const shuffle = arr => { for (let i = arr.length - 1; i > 0; i--) { const j = rnd(0, i); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+function makeProblem(mode, level) {
+  const max = level === 1 ? 5 : 10;
+  const op = mode === 'mix' ? (Math.random() < 0.5 ? '+' : '-') : mode === 'add' ? '+' : '-';
+  let a, b;
+  if (op === '+') { const sum = rnd(2, max); a = rnd(1, sum - 1); b = sum - a; }
+  else { a = rnd(2, max); b = rnd(1, level === 1 ? a - 1 : a); }
+  const c = op === '+' ? a + b : a - b;
+  const opts = new Set([c]);
+  while (opts.size < 3) { const d = c + [-2, -1, 1, 2][rnd(0, 3)]; if (d >= 0 && d <= 10) opts.add(d); }
+  return { a, b, op, c, opts: shuffle([...opts]), emoji: COUNT_EMOJI[rnd(0, COUNT_EMOJI.length - 1)], key: `${a}${op}${b}` };
 }
 
 // ---------- celebración ----------

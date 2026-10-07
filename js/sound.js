@@ -97,6 +97,7 @@ async function playClip([file, start, end]) {
   src.connect(g).connect(c.destination);
   src.start(0, start, end - start);
   current = src;
+  return end - start;
 }
 
 // Clave de archivo a partir del texto: "¡Muy bien!" -> "muy-bien"
@@ -113,24 +114,49 @@ function pickVoice(lang) {
       || same[0] || null;
 }
 
+let token = 0;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Dice una frase. Devuelve una promesa que se cumple cuando termina (aprox.).
 export function say(text, lang) {
+  token++;
+  return sayOne(text, lang);
+}
+
+// Dice varias frases seguidas ("dos", "más", "uno"…). Se corta si empieza otra frase.
+export async function sayQueue(texts, lang, gap = 90) {
+  const my = ++token;
+  for (const t of texts) {
+    if (my !== token) return;
+    await sayOne(t, lang);
+    await sleep(gap);
+  }
+}
+
+async function sayOne(text, lang) {
   if (muted || !text) return;
   const key = keyOf(text);
   try { current?.stop(); } catch {}
   current = null;
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   const clip = audioIndex[lang]?.[key];
-  if (clip) { playClip(clip).catch(() => speak(text, lang)); return; }
-  speak(text, lang);
+  if (clip) {
+    try { const dur = await playClip(clip); await sleep(dur * 1000); return; } catch {}
+  }
+  await speak(text, lang);
 }
 
 function speak(text, lang) {
-  if (!('speechSynthesis' in window)) return;
+  if (!('speechSynthesis' in window)) return Promise.resolve();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = VOICE_LANG[lang];
   const v = pickVoice(lang);
   if (v) u.voice = v;
   u.rate = 0.9;
   u.pitch = 1.15;
-  speechSynthesis.speak(u);
+  return new Promise(res => {
+    u.onend = u.onerror = res;
+    setTimeout(res, 400 + text.length * 120);
+    speechSynthesis.speak(u);
+  });
 }
