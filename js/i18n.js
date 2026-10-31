@@ -40,6 +40,8 @@ export const UI = {
   upper:  { es: 'Mayúsculas', en: 'Capital letters', de: 'Großbuchstaben' },
   lower:  { es: 'Minúsculas', en: 'Small letters', de: 'Kleinbuchstaben' },
   explore: { es: 'Explorar', en: 'Explore', de: 'Entdecken' },
+  howto: { es: '¿Cómo pasa?', en: 'How it happens', de: 'Wie geht das?' },
+  again: { es: '¡Otra vez!', en: 'Again!', de: 'Nochmal!' },
   math:   { es: 'Sumas y restas', en: 'Adding and taking away', de: 'Plus und Minus' },
   add:    { es: 'Sumas', en: 'Adding', de: 'Plusrechnen' },
   sub:    { es: 'Restas', en: 'Taking away', de: 'Minusrechnen' },

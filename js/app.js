@@ -6,6 +6,7 @@ import { confetti } from './confetti.js';
 import { Tracer } from './trace.js';
 import { SceneView } from './explore.js';
 import { SCENES } from './scenes.js';
+import { STORIES, StoryView, imgOf } from './howto.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -19,6 +20,7 @@ const state = {
   done: store.get('done', []),
   traced: store.get('traced', []),
   explored: store.get('explored', []),
+  watched: store.get('watched', []),
   mathLevel: store.get('mathLevel', 1),
   perfectRounds: store.get('perfectRounds', 0),
 };
@@ -61,13 +63,14 @@ const SCREENS = {
           <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
           <button class="card c5" data-go="math"><span class="emo">➕</span><span class="lbl">${t(UI.math)}</span></button>
           <button class="card c6" data-go="explore"><span class="emo">🔍</span><span class="lbl">${t(UI.explore)}</span></button>
+          <button class="card c7" data-go="howto"><span class="emo">🌈</span><span class="lbl">${t(UI.howto)}</span></button>
           <button class="card c3" data-go="album"><span class="emo">🖼️</span><span class="lbl">${t(UI.album)}</span></button>
         </div>
       </div>`);
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     onTap(s.querySelector('.flag'), () => {
@@ -426,6 +429,46 @@ const SCREENS = {
       },
     });
     count.querySelector('span').textContent = view.total;
+  },
+
+  howto() {
+    const s = h(`
+      <div class="screen explore-menu">
+        <header class="bar"><button class="back">🏠</button></header>
+        <div class="grid scenes">
+          ${STORIES.map(st => `<button class="scn" data-id="${st.id}" style="--bg:${st.bg}"><img src="${imgOf(st, st.thumb).replace('.webp', '-mini.webp')}" alt="" loading="lazy"><span class="lbl">${st.emoji} ${t(st)}</span>${state.watched.includes(st.id) ? '<i class="badge">⭐</i>' : ''}</button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.scn').forEach(b => onTap(b, () => {
+      const st = STORIES.find(x => x.id === b.dataset.id);
+      say(t(st), state.lang);
+      go('story', st.id);
+    }));
+  },
+
+  story(id) {
+    const st = STORIES.find(x => x.id === id);
+    const s = h(`
+      <div class="screen story-screen" style="--bg:${st.bg}">
+        <div class="st-root"></div>
+        <button class="back sc-back">⬅️</button>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('howto'));
+    view = new StoryView(s.querySelector('.st-root'), st, {
+      lang: state.lang,
+      onEnd: () => {
+        if (!state.watched.includes(st.id)) { state.watched.push(st.id); store.set('watched', state.watched); }
+        state.stars++; store.set('stars', state.stars);
+        cheer();
+        const end = h(`<div class="st-end"><button class="again">🔁 ${t(UI.again)}</button><button class="menu">🌈</button></div>`);
+        s.append(end);
+        onTap(end.querySelector('.again'), e => { e.stopPropagation(); end.remove(); view.restart(); });
+        onTap(end.querySelector('.menu'), () => go('howto'));
+      },
+    });
   },
 
   album() {
