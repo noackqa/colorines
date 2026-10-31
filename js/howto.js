@@ -89,6 +89,72 @@ export const STORIES = [
         es: 'La semilla se queda en la tierra… ¡y todo vuelve a empezar!', en: 'The seed stays in the ground… and it all starts again!', de: 'Der Samen bleibt in der Erde … und alles beginnt von vorn!' },
     ],
   },
+  {
+    id: 'mariposa', emoji: '🦋', bg: '#FFE3F1', thumb: 6,
+    es: 'De oruga a mariposa', en: 'From caterpillar to butterfly', de: 'Von der Raupe zum Schmetterling',
+    steps: [
+      { img: 1, fx: [['glow', { x: 50.6, y: 49.3, r: 3, color: '255,240,150' }], ['sparkle', { x: 50.6, y: 49.3, r: 4, n: 6 }]],
+        es: 'Mira esta hoja. Tiene un huevito muy pequeño.', en: 'Look at this leaf. It has a tiny little egg.', de: 'Schau dir dieses Blatt an. Darauf liegt ein winziges Ei.' },
+      { img: 2, fx: [['sparkle', { x: 53, y: 47, r: 5, n: 8 }]],
+        es: '¡Crac! Del huevo sale una oruga chiquitita.', en: 'Crack! A tiny caterpillar comes out of the egg.', de: 'Knack! Aus dem Ei schlüpft eine winzige Raupe.' },
+      { img: 3, fx: [['bob', { e: '😋', x: 47, y: 25, size: 4 }]],
+        es: 'Come hojas y más hojas. ¡Ñam, ñam! Y se pone gordita.', en: 'It eats leaves and more leaves. Yum, yum! And it gets nice and fat.', de: 'Sie frisst Blätter und noch mehr Blätter. Mampf, mampf! Und sie wird ganz dick.' },
+      { img: 4, fx: [['glow', { x: 50, y: 73, r: 6, color: '200,255,160' }], ['sparkle', { x: 50, y: 73, r: 6, n: 8 }]],
+        es: 'Luego se cuelga de la rama y se envuelve. Se llama crisálida.', en: 'Then it hangs from the branch and wraps itself up. It is called a chrysalis.', de: 'Dann hängt sie sich an den Ast und hüllt sich ein. Das ist eine Puppe.' },
+      { img: 4, fx: [['zzz', { x: 56, y: 70 }], ['glow', { x: 50, y: 73, r: 6, color: '200,255,160' }]],
+        es: 'Dentro, duerme y cambia muy despacito. ¡Shhh!', en: 'Inside, it sleeps and changes very slowly. Shhh!', de: 'Drinnen schläft sie und verwandelt sich ganz langsam. Pssst!' },
+      { img: 5, fx: [['sparkle', { x: 54, y: 80, r: 9, n: 14 }]],
+        es: 'Un día, la crisálida se abre… ¡y sale una mariposa!', en: 'One day the chrysalis opens… and out comes a butterfly!', de: 'Eines Tages geht die Puppe auf … und heraus kommt ein Schmetterling!' },
+      { img: 6, fx: [['fly', { e: '🦋', x: 30, y: 25, rx: 12, ry: 8, n: 2 }], ['sparkle', { x: 82, y: 38, r: 13, n: 12 }]],
+        es: 'Abre sus alas de colores y se va volando.', en: 'It opens its colourful wings and flies away.', de: 'Er öffnet seine bunten Flügel und fliegt davon.' },
+      { img: 1, fx: [['fly', { e: '🦋', x: 54, y: 36, rx: 8, ry: 5, n: 1 }], ['glow', { x: 50.6, y: 49.3, r: 3, color: '255,240,150', delay: 1 }]],
+        es: 'La mariposa pone un huevito en una hoja… ¡y vuelta a empezar!', en: 'The butterfly lays a tiny egg on a leaf… and it all starts again!', de: 'Der Schmetterling legt ein winziges Ei auf ein Blatt … und alles beginnt von vorn!' },
+    ],
+  },
+  {
+    id: 'pan', emoji: '🍞', bg: '#FFEFC4', thumb: 8,
+    es: 'Cómo se hace el pan', en: 'How bread is made', de: 'Wie Brot gemacht wird',
+    steps: [
+      { img: 1, fx: [['rays', { x: 16, y: 19, r: 6 }], ['sparkle', { x: 50, y: 70, r: 30, n: 12 }]],
+        es: 'El pan empieza en el campo, con el trigo dorado.', en: 'Bread starts in the field, with golden wheat.', de: 'Brot beginnt auf dem Feld, mit goldenem Weizen.' },
+      { img: 2, fx: [['dust', { x: 84, y: 28, w: 15, h: 22, color: '235,200,110' }], ['dust', { x: 58, y: 52, w: 12, h: 10, color: '235,200,110', n: 14 }]],
+        es: 'Una cosechadora grande recoge los granos de trigo.', en: 'A big combine harvester collects the wheat grains.', de: 'Ein großer Mähdrescher sammelt die Weizenkörner ein.' },
+      { img: 3, fx: [['dust', { x: 54, y: 60, w: 14, h: 18 }], ['sparkle', { x: 61, y: 73, r: 6, n: 8 }]],
+        es: 'En el molino, los granos se aplastan y se convierten en harina.', en: 'At the mill, the grains are crushed into flour.', de: 'In der Mühle werden die Körner zu Mehl gemahlen.' },
+      { img: 4, fx: [['sparkle', { x: 66, y: 62, r: 13, n: 12 }]],
+        es: 'En casa juntamos harina, agua, sal y levadura.', en: 'At home we mix flour, water, salt and yeast.', de: 'Zu Hause mischen wir Mehl, Wasser, Salz und Hefe.' },
+      { img: 5, fx: [['dust', { x: 40, y: 60, w: 20, h: 16 }]], shake: true,
+        es: 'Amasamos y amasamos, y sale una masa blandita.', en: 'We knead and knead, and we get a soft dough.', de: 'Wir kneten und kneten, und es wird ein weicher Teig.' },
+      { img: 6, fx: [['sparkle', { x: 39, y: 46, r: 9, n: 10 }]],
+        es: 'La masa descansa y se hincha como un globo.', en: 'The dough rests and puffs up like a balloon.', de: 'Der Teig ruht und geht auf wie ein Ballon.' },
+      { img: 7, fx: [['glow', { x: 80, y: 40, r: 10, color: '255,150,40' }], ['bubbles', { x: 74, y: 30, w: 12, h: 16, n: 10 }]],
+        es: 'La metemos en el horno bien caliente.', en: 'We put it in the hot oven.', de: 'Wir schieben ihn in den heißen Ofen.' },
+      { img: 8, fx: [['vapor', { x: 37, y: 34, w: 14, h: 20, n: 12 }], ['sparkle', { x: 45, y: 60, r: 12, n: 10 }]],
+        es: '¡Mmm, qué bien huele! Ya tenemos pan.', en: 'Mmm, it smells so good! Now we have bread.', de: 'Mmm, das riecht gut! Jetzt haben wir Brot.' },
+    ],
+  },
+  {
+    id: 'tierra', emoji: '🌍', bg: '#D9DEFF', thumb: 4,
+    es: 'El sol, la Tierra y la luna', en: 'The sun, the Earth and the moon', de: 'Sonne, Erde und Mond',
+    steps: [
+      { img: 1, fx: [['rays', { x: 2, y: 52, r: 14 }]],
+        es: 'Este es el sol. Es una estrella enorme que nos da luz y calor.', en: 'This is the sun. It is a huge star that gives us light and warmth.', de: 'Das ist die Sonne. Sie ist ein riesiger Stern und gibt uns Licht und Wärme.' },
+      { img: 1, fx: [['earth', { x: 66, y: 50, r: 13, spin: 0.25, grow: true }]],
+        es: 'Esta es la Tierra, donde vivimos. Es redonda como una pelota.', en: 'This is the Earth, where we live. It is round like a ball.', de: 'Das ist die Erde, auf der wir wohnen. Sie ist rund wie ein Ball.' },
+      { img: 1, fx: [['earth', { x: 66, y: 50, r: 13, spin: 1.3, house: true }]],
+        es: 'La Tierra gira y gira, como una peonza.', en: 'The Earth spins and spins, like a spinning top.', de: 'Die Erde dreht sich und dreht sich, wie ein Kreisel.' },
+      { img: 2, fx: [['rays', { x: 86, y: 20, r: 5.5 }]],
+        es: 'Cuando nuestra casa mira hacia el sol, es de día.', en: 'When our home faces the sun, it is daytime.', de: 'Wenn unser Haus zur Sonne schaut, ist es Tag.' },
+      { img: 3, fx: [['glow', { x: 87, y: 22, r: 8, color: '255,240,170' }], ['sparkle', { x: 40, y: 20, r: 30, n: 14 }]],
+        es: 'Cuando mira hacia el otro lado, es de noche.', en: 'When it faces the other way, it is night-time.', de: 'Wenn es auf die andere Seite schaut, ist es Nacht.' },
+      { img: 1, fx: [['earth', { x: 66, y: 50, r: 11, spin: 0.4, moon: true }]],
+        es: 'La luna da vueltas alrededor de la Tierra.', en: 'The moon goes round and round the Earth.', de: 'Der Mond kreist um die Erde.' },
+      { img: 4, fx: [['rays', { x: 50, y: 50, r: 7.5 }], ['orbit', { x: 50, y: 49, rx: 42.3, ry: 31, r: 3.2 }]],
+        es: 'Y la Tierra da una vuelta enorme alrededor del sol. ¡Cada vuelta es un año!', en: 'And the Earth travels all the way around the sun. Each trip is one year!', de: 'Und die Erde reist einmal ganz um die Sonne. Jede Runde ist ein Jahr!' },
+      { img: 4, fx: [['rays', { x: 50, y: 50, r: 7.5 }], ['orbit', { x: 50, y: 49, rx: 42.3, ry: 31, r: 3.2, speed: 0.9, party: true }]],
+        es: 'Por eso cumples años. ¡Feliz vuelta al sol!', en: 'That is why you have birthdays. Happy trip around the sun!', de: 'Darum hast du Geburtstag. Alles Gute zur Sonnenrunde!' },
+    ],
+  },
 ];
 
 export const imgOf = (story, n) => `stories/${story.id}-${n}.webp`;
@@ -327,7 +393,7 @@ const FX = {
   fly({ e, x, y, rx, ry, n = 2 }) {
     const ps = Array.from({ length: n }, (_, i) => ({ ph: i * 6.28 / n, sp: rand(0.6, 0.9) }));
     return (c, W, H, t) => {
-      c.font = `${Math.round(W * 0.035)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.font = `${Math.round(W * 0.035)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
       for (const p of ps) {
         const a = t * p.sp + p.ph;
         c.fillText(e, (x + Math.cos(a) * rx) / 100 * W, (y + Math.sin(a * 2) * ry) / 100 * H + Math.sin(t * 9 + p.ph) * W * 0.003);
@@ -338,7 +404,7 @@ const FX = {
   petals({ x, y, w, h, n = 14 }) {
     const ps = Array.from({ length: n }, () => ({ x: rand(x, x + w), age: rand(0, 1), v: rand(0.12, 0.22), ph: rand(0, 6) }));
     return (c, W, H, t, dt) => {
-      c.font = `${Math.round(W * 0.018)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.font = `${Math.round(W * 0.018)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
       for (const p of ps) {
         p.age += p.v * dt;
         if (p.age > 1) { p.age = 0; p.x = rand(x, x + w); }
@@ -357,12 +423,132 @@ const FX = {
       if (t < T) { const k = t / T; px = x + (x1 - x) * k; py = y + (y1 - y) * k * k; }
       else { const b = Math.max(0, Math.sin((t - T) * 9) * Math.exp(-(t - T) * 5)); px = x1; py = y1 - b * 4; }
       c.globalAlpha = t < 1.5 ? 1 : Math.max(0, 1 - (t - 1.5) * 1.5); // se funde con la manzana del dibujo
-      c.font = `${Math.round(W * size / 100)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle';
+      c.font = `${Math.round(W * size / 100)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
       c.fillText(e, px / 100 * W, py / 100 * H);
       c.globalAlpha = 1;
     };
   },
+
+  // Un emoji que da botecitos en su sitio (la oruga comiendo).
+  bob({ e, x, y, size = 4 }) {
+    return (c, W, H, t) => {
+      c.globalAlpha = Math.min(1, t * 2);
+      c.font = `${Math.round(W * size / 100)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
+      c.fillText(e, x / 100 * W, y / 100 * H - Math.abs(Math.sin(t * 5)) * H * 0.02);
+      c.globalAlpha = 1;
+    };
+  },
+
+  // Zetas de dormir que suben y se desvanecen.
+  zzz({ x, y }) {
+    return (c, W, H, t) => {
+      c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#5B6CC8';
+      for (let i = 0; i < 3; i++) {
+        const k = ((t * 0.45) + i / 3) % 1;
+        c.globalAlpha = Math.sin(k * Math.PI);
+        c.font = `800 ${Math.round(W * (0.026 + k * 0.03))}px sans-serif`;
+        c.fillText('z', (x + k * 9 + Math.sin(k * 6) * 1.5) / 100 * W, (y - k * 22) / 100 * H);
+      }
+      c.globalAlpha = 1;
+    };
+  },
+
+  // Polvillo (harina, trigo) que flota y se desvanece.
+  dust({ x, y, w, h, n = 26, color = '255,255,255' }) {
+    const ps = Array.from({ length: n }, () => ({ x: rand(x, x + w), y: rand(y, y + h), age: rand(0, 1), v: rand(0.3, 0.6), r: rand(0.4, 1) }));
+    return (c, W, H, t, dt) => {
+      for (const p of ps) {
+        p.age += p.v * dt;
+        if (p.age > 1) { p.age = 0; p.x = rand(x, x + w); p.y = rand(y, y + h); }
+        c.fillStyle = `rgba(${color},${0.85 * Math.sin(p.age * Math.PI)})`;
+        c.beginPath(); c.arc((p.x + Math.sin(t + p.r * 9) * 1.2) / 100 * W, (p.y - p.age * 5) / 100 * H, W * 0.005 * p.r, 0, 7); c.fill();
+      }
+    };
+  },
+
+  // La Tierra vista de lado, girando de verdad (los continentes pasan de izquierda a derecha).
+  // El sol está a la izquierda: la mitad derecha es de noche. house marca "nuestra casa";
+  // moon hace girar la luna alrededor (por detrás cuando va arriba).
+  earth({ x, y, r, spin = 0.3, house = false, moon = false, grow = false }) {
+    return (c, W, H, t) => {
+      const k = grow ? Math.min(1, t / 0.7) : 1;
+      const cx = x / 100 * W, cy = y / 100 * H, R = r / 100 * W * (1 - Math.pow(1 - k, 3));
+      if (R < 1) return;
+      const m = t * 0.7, mx = cx + Math.cos(m) * R * 2.3, my = cy + Math.sin(m) * R * 0.55, mR = R * 0.27;
+      if (moon && Math.sin(m) < 0) drawMoon(c, mx, my, mR);
+      drawGlobe(c, cx, cy, R, t * spin, house);
+      if (moon && Math.sin(m) >= 0) drawMoon(c, mx, my, mR);
+    };
+  },
+
+  // La Tierra pequeñita dando la vuelta al sol por el camino de puntos.
+  orbit({ x, y, rx, ry, r, speed = 0.5, party = false }) {
+    return (c, W, H, t) => {
+      const a = Math.PI / 2 - t * speed; // empieza abajo y va en sentido contrario a las agujas
+      const px = (x + Math.cos(a) * rx) / 100 * W, py = (y + Math.sin(a) * ry) / 100 * H;
+      drawGlobe(c, px, py, r / 100 * W, t * 2, false);
+      if (party) {
+        c.font = `${Math.round(W * 0.03)}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
+        c.fillText('🎂', px, py - r / 100 * W * 1.9);
+      }
+    };
+  },
 };
+
+// Manchas de tierra firme: [longitud, latitud, tamaño] (radianes / fracción del radio).
+const LAND = [
+  // continente 1
+  [0, 0.6, 0.26], [0.3, 0.45, 0.24], [-0.15, 0.3, 0.2], [0.2, 0.15, 0.17], [0.35, -0.15, 0.18], [0.3, -0.45, 0.16],
+  // continente 2
+  [1.9, 0.55, 0.22], [2.3, 0.5, 0.25], [2.6, 0.3, 0.2], [2.1, 0.2, 0.16],
+  // continente 3
+  [3.6, 0.25, 0.22], [3.8, 0, 0.26], [3.7, -0.3, 0.2], [3.9, -0.55, 0.15],
+  // islas
+  [5, 0.65, 0.16], [5.3, 0.5, 0.14], [5.2, -0.4, 0.18], [5.45, -0.3, 0.12],
+];
+
+function drawGlobe(c, cx, cy, R, rot, house) {
+  c.save();
+  c.beginPath(); c.arc(cx, cy, R, 0, 7); c.clip();
+  const g = c.createRadialGradient(cx - R * 0.35, cy - R * 0.35, R * 0.1, cx, cy, R);
+  g.addColorStop(0, '#6CC3FF'); g.addColorStop(1, '#2477D6');
+  c.fillStyle = g; c.fillRect(cx - R, cy - R, R * 2, R * 2);
+  c.fillStyle = '#5DBB4A';
+  for (const [lon, lat, s] of LAND) {
+    const L = lon + rot, z = Math.cos(lat) * Math.cos(L);
+    if (z <= 0) continue;
+    const px = cx + Math.cos(lat) * Math.sin(L) * R, py = cy - Math.sin(lat) * R;
+    c.beginPath(); c.ellipse(px, py, s * 1.4 * R * Math.max(0.15, z), s * 1.4 * R * 0.8 * Math.cos(lat), 0, 0, 7); c.fill();
+  }
+  if (house) {
+    const L = 0.4 + rot, z = Math.cos(L);
+    if (z > 0) {
+      const hx = cx + Math.sin(L) * R * 0.9, hy = cy - R * 0.12;
+      c.fillStyle = `rgba(255,240,150,${0.55 * z})`; c.beginPath(); c.arc(hx, hy, R * 0.26 * (0.5 + z * 0.5), 0, 7); c.fill();
+      c.font = `${Math.round(R * 0.42 * (0.5 + z * 0.5))}px serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#000';
+      c.fillText('🏠', hx, hy);
+    }
+  }
+  // noche a la derecha (el sol está a la izquierda)
+  const n = c.createLinearGradient(cx - R * 0.15, 0, cx + R * 0.35, 0);
+  n.addColorStop(0, 'rgba(10,15,60,0)'); n.addColorStop(1, 'rgba(10,15,60,.62)');
+  c.fillStyle = n; c.fillRect(cx - R, cy - R, R * 2, R * 2);
+  c.restore();
+  c.strokeStyle = 'rgba(160,215,255,.6)'; c.lineWidth = R * 0.06;
+  c.beginPath(); c.arc(cx, cy, R * 1.03, 0, 7); c.stroke();
+}
+
+function drawMoon(c, x, y, r) {
+  c.save();
+  c.beginPath(); c.arc(x, y, r, 0, 7); c.clip();
+  c.fillStyle = '#E4E4EA'; c.fillRect(x - r, y - r, r * 2, r * 2);
+  c.fillStyle = '#C9C9D2';
+  for (const [dx, dy, s] of [[-0.3, -0.3, 0.22], [0.25, 0.1, 0.18], [-0.1, 0.4, 0.14]]) { c.beginPath(); c.arc(x + dx * r, y + dy * r, s * r, 0, 7); c.fill(); }
+  const n = c.createLinearGradient(x - r * 0.1, 0, x + r * 0.5, 0);
+  n.addColorStop(0, 'rgba(10,15,60,0)'); n.addColorStop(1, 'rgba(10,15,60,.55)');
+  c.fillStyle = n; c.fillRect(x - r, y - r, r * 2, r * 2);
+  c.restore();
+}
 
 // ---------- reproductor ----------
 export class StoryView {
