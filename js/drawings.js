@@ -34,6 +34,7 @@ export const THEMES = [
   { id: 'unicorn', emoji: '🦄', bg: '#FFD6F2', es: 'Unicornios', en: 'Unicorns', de: 'Einhörner' },
   { id: 'mermaid', emoji: '🧜‍♀️', bg: '#C9F2EE', es: 'Sirenas', en: 'Mermaids', de: 'Meerjungfrauen' },
   { id: 'sea', emoji: '🦈', bg: '#CFE6FF', es: 'El mar', en: 'The sea', de: 'Das Meer' },
+  { id: 'space', emoji: '🚀', bg: '#D9E0FF', es: 'El espacio', en: 'Space', de: 'Weltraum' },
   { id: 'volcano', emoji: '🌋', bg: '#FFD9C2', es: 'Volcanes', en: 'Volcanoes', de: 'Vulkane' },
   { id: 'dino', emoji: '🦖', bg: '#D9F5C5', es: 'Dinosaurios', en: 'Dinosaurs', de: 'Dinosaurier' },
   { id: 'works', emoji: '🚜', bg: '#FFF0B3', es: 'Tractores', en: 'Tractors', de: 'Traktoren' },
@@ -331,6 +332,8 @@ export const DRAWINGS = [
 
   // ---------------- IMÁGENES (PNG líneas negras, 1200×900) ----------------
   { id: 'img-unicornio', theme: 'unicorn', img: 'img/unicornio.png', es: 'unicornio', en: 'unicorn', de: 'Einhorn' },
+  { id: 'img-sirena-roca', theme: 'mermaid', img: 'img/sirena-roca.png', es: 'sirena', en: 'mermaid', de: 'Meerjungfrau' },
+  { id: 'img-sirena-pelo', theme: 'mermaid', img: 'img/sirena-pelo.png', es: 'sirena', en: 'mermaid', de: 'Meerjungfrau' },
   { id: 'img-hada', theme: 'fairy', img: 'img/hada.png', es: 'hada', en: 'fairy', de: 'Fee' },
   { id: 'img-dragon', theme: 'fairy', img: 'img/dragon.png', es: 'dragón', en: 'dragon', de: 'Drache' },
   { id: 'img-castillo', theme: 'fairy', img: 'img/castillo.png', es: 'castillo', en: 'castle', de: 'Schloss' },
@@ -354,4 +357,26 @@ export const DRAWINGS = [
   { id: 'img-autobus', theme: 'school', img: 'img/autobus.png', es: 'autobús', en: 'school bus', de: 'Schulbus' },
   { id: 'img-aula', theme: 'school', img: 'img/aula.png', es: 'clase', en: 'classroom', de: 'Klassenzimmer' },
   { id: 'img-camino-colegio', theme: 'school', img: 'img/camino-colegio.png', es: 'camino al cole', en: 'walk to school', de: 'Schulweg' },
+
+  // ---------------- LÁMINAS EDUCATIVAS (qué contar en cada una: GUIA-LAMINAS.md) ----------------
+  { id: 'img-tierra-luna', theme: 'space', img: 'img/tierra-luna.png', es: 'la Tierra y la Luna', en: 'Earth and Moon', de: 'Erde und Mond' },
+  { id: 'img-sistema-solar', theme: 'space', img: 'img/sistema-solar.png', es: 'sistema solar', en: 'solar system', de: 'Sonnensystem' },
+  { id: 'img-astronauta', theme: 'space', img: 'img/astronauta.png', es: 'astronauta', en: 'astronaut', de: 'Astronaut' },
+  { id: 'img-volcan-capas', theme: 'volcano', img: 'img/volcan-capas.png', es: 'volcán por dentro', en: 'inside a volcano', de: 'Vulkan von innen' },
+  { id: 'img-ciclo-planta', theme: 'nature', img: 'img/ciclo-planta.png', es: 'de semilla a árbol', en: 'from seed to tree', de: 'vom Samen zum Baum' },
+  { id: 'img-ciclo-agua', theme: 'nature', img: 'img/ciclo-agua.png', es: 'el viaje del agua', en: 'the water cycle', de: 'Wasserkreislauf' },
+  { id: 'img-estaciones', theme: 'nature', img: 'img/estaciones.png', es: 'las estaciones', en: 'the seasons', de: 'Jahreszeiten' },
+  { id: 'img-mariposa', theme: 'animals', img: 'img/mariposa.png', es: 'mariposa', en: 'butterfly', de: 'Schmetterling' },
+  { id: 'img-rana', theme: 'animals', img: 'img/rana.png', es: 'rana', en: 'frog', de: 'Frosch' },
+  { id: 'img-gallina', theme: 'animals', img: 'img/gallina.png', es: 'del huevo al pollito', en: 'egg to chick', de: 'vom Ei zum Küken' },
+  { id: 'img-granja-productos', theme: 'animals', img: 'img/granja-productos.png', es: 'la granja', en: 'the farm', de: 'Bauernhof' },
+  { id: 'img-fosil', theme: 'dino', img: 'img/fosil.png', es: 'fósil de dinosaurio', en: 'dinosaur fossil', de: 'Dino-Fossil' },
+  { id: 'img-oceano-capas', theme: 'sea', img: 'img/oceano-capas.png', es: 'el fondo del mar', en: 'under the sea', de: 'unter dem Meer' },
+  { id: 'img-unicornio-arcoiris', theme: 'unicorn', img: 'img/unicornio-arcoiris.png', es: 'unicornio y arcoíris', en: 'unicorn and rainbow', de: 'Einhorn und Regenbogen' },
+  { id: 'img-bomberos', theme: 'rescue', img: 'img/bomberos.png', es: 'bomberos', en: 'fire engine', de: 'Feuerwehr' },
+  { id: 'img-medica', theme: 'rescue', img: 'img/medica.png', es: 'la doctora', en: 'the doctor', de: 'Ärztin' },
+  { id: 'img-paso-cebra', theme: 'school', img: 'img/paso-cebra.png', es: 'paso de cebra', en: 'zebra crossing', de: 'Zebrastreifen' },
+  { id: 'img-trigo-pan', theme: 'works', img: 'img/trigo-pan.png', es: 'del trigo al pan', en: 'wheat to bread', de: 'vom Korn zum Brot' },
+  { id: 'img-castillo-partes', theme: 'fairy', img: 'img/castillo-partes.png', es: 'castillo', en: 'castle', de: 'Schloss' },
+  { id: 'img-hada-luna', theme: 'fairy', img: 'img/hada-luna.png', es: 'fases de la luna', en: 'phases of the moon', de: 'Mondphasen' },
 ];
