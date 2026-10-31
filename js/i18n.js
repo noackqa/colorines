@@ -39,6 +39,7 @@ export const UI = {
   nums:   { es: 'Números', en: 'Numbers', de: 'Zahlen' },
   upper:  { es: 'Mayúsculas', en: 'Capital letters', de: 'Großbuchstaben' },
   lower:  { es: 'Minúsculas', en: 'Small letters', de: 'Kleinbuchstaben' },
+  explore: { es: 'Explorar', en: 'Explore', de: 'Entdecken' },
   math:   { es: 'Sumas y restas', en: 'Adding and taking away', de: 'Plus und Minus' },
   add:    { es: 'Sumas', en: 'Adding', de: 'Plusrechnen' },
   sub:    { es: 'Restas', en: 'Taking away', de: 'Minusrechnen' },

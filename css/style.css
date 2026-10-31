@@ -159,3 +159,31 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 @keyframes shake { 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 .row5 { font-size: 40px; letter-spacing: 4px; }
 @media (orientation: portrait) { .eq { flex-wrap: wrap; } }
+
+/* ---------- explorar ---------- */
+.home .cards { display: grid; grid-template-columns: repeat(3, minmax(0, min(300px, 28vw, 34vh))); grid-auto-rows: auto; justify-content: center; align-content: center; }
+.home .card { max-width: none; width: 100%; aspect-ratio: 1.25; }
+.home .card .emo { font-size: clamp(54px, 8vh, 100px); }
+.c6 { background: #FFB38A; } .c6 .emo { animation-delay: 2.5s; }
+.scenes { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.scn { position: relative; padding: 8px; border-radius: 26px; background: var(--bg); display: flex; flex-direction: column; gap: 6px; }
+.scn img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 18px; display: block; }
+.scn .lbl { font-size: 24px; font-weight: 800; }
+.scn .badge { position: absolute; top: 2px; right: 8px; font-size: 32px; font-style: normal; }
+.scene-screen { padding: 0; position: relative; background: #000; }
+.sc-root { position: absolute; inset: 0; overflow: hidden; touch-action: none; }
+.sc-pan { position: absolute; top: 0; left: 0; will-change: transform; }
+.sc-img { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.sc-fx { position: absolute; inset: 0; pointer-events: none; }
+.sc-back { position: absolute; top: 12px; left: 12px; width: 70px; height: 70px; font-size: 36px; z-index: 5; opacity: .9; }
+.sc-count { position: absolute; top: 12px; right: 12px; z-index: 5; background: #fff; border-radius: 40px; padding: 8px 20px; font-size: 30px; font-weight: 800; box-shadow: var(--shadow); }
+.sc-count.bump { animation: pop .5s cubic-bezier(.3, 1.6, .5, 1); }
+.sc-pop { position: absolute; background-repeat: no-repeat; border-radius: 18px; transform-origin: 50% 70%; animation: scpop 1.5s cubic-bezier(.3, 1.4, .5, 1) forwards; box-shadow: 0 10px 30px rgba(0, 0, 0, .35); outline: 4px solid #fff; }
+.sc-pop.soft { animation: scwiggle 1.3s ease-in-out forwards; box-shadow: none; outline: none; }
+@keyframes scpop { 0% { transform: scale(1); } 25% { transform: scale(1.35) rotate(-3deg); } 45% { transform: scale(1.25) rotate(3deg); } 75% { transform: scale(1.25); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+@keyframes scwiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-6deg) scale(1.06); } 40% { transform: rotate(6deg) scale(1.06); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(3deg); } }
+.sc-spark { position: absolute; font-size: 28px; transform: translate(-50%, -50%); animation: spark .8s ease-out forwards; }
+.sc-ripple { position: absolute; width: 60px; height: 60px; margin: -30px 0 0 -30px; border-radius: 50%; border: 4px solid rgba(255, 255, 255, .9); animation: ripple .6s ease-out forwards; }
+@keyframes ripple { from { transform: scale(.2); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+.sc-bubble { position: absolute; z-index: 6; max-width: min(80vw, 560px); background: #fff; color: var(--ink); font-size: clamp(26px, 3.6vw, 44px); font-weight: 800; line-height: 1.15; text-align: center; padding: 12px 24px; border-radius: 28px; box-shadow: 0 8px 24px rgba(0, 0, 0, .3); animation: pop .4s cubic-bezier(.3, 1.6, .5, 1); pointer-events: none; }
+.sc-bubble.bye { transition: opacity .5s; opacity: 0; }

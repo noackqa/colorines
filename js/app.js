@@ -4,6 +4,8 @@ import { Board, drawingSvg } from './board.js';
 import { sfx, say, sayQueue, initVoice, preloadVoice } from './sound.js';
 import { confetti } from './confetti.js';
 import { Tracer } from './trace.js';
+import { SceneView } from './explore.js';
+import { SCENES } from './scenes.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -16,6 +18,7 @@ const state = {
   stars: store.get('stars', 0),
   done: store.get('done', []),
   traced: store.get('traced', []),
+  explored: store.get('explored', []),
   mathLevel: store.get('mathLevel', 1),
   perfectRounds: store.get('perfectRounds', 0),
 };
@@ -24,12 +27,14 @@ const app = document.getElementById('app');
 let board = null;
 let idleTimer = null;
 let tracer = null;
+let view = null;
 
 // ---------- utilidades ----------
 const h = (html) => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; };
 function go(screen, ...args) {
   clearTimeout(idleTimer);
   tracer?.destroy(); tracer = null;
+  view?.destroy(); view = null;
   document.querySelectorAll('.modal, .counting').forEach(m => m.remove());
   app.innerHTML = '';
   SCREENS[screen](...args);
@@ -55,13 +60,14 @@ const SCREENS = {
           <button class="card c2" data-go="free"><span class="emo">🎨</span><span class="lbl">${t(UI.free)}</span></button>
           <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
           <button class="card c5" data-go="math"><span class="emo">➕</span><span class="lbl">${t(UI.math)}</span></button>
+          <button class="card c6" data-go="explore"><span class="emo">🔍</span><span class="lbl">${t(UI.explore)}</span></button>
           <button class="card c3" data-go="album"><span class="emo">🖼️</span><span class="lbl">${t(UI.album)}</span></button>
         </div>
       </div>`);
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     onTap(s.querySelector('.flag'), () => {
@@ -377,6 +383,49 @@ const SCREENS = {
 
     s.querySelector('.lvl').textContent = state.mathLevel === 1 ? '🐣' : '🦄';
     next();
+  },
+
+  explore() {
+    const s = h(`
+      <div class="screen explore-menu">
+        <header class="bar"><button class="back">🏠</button></header>
+        <div class="grid scenes">
+          ${SCENES.map(sc => `<button class="scn" data-id="${sc.id}" style="--bg:${sc.bg}"><img src="${sc.img.replace('.webp', '-mini.webp')}" alt="" loading="lazy"><span class="lbl">${sc.emoji} ${t(sc)}</span>${state.explored.includes(sc.id) ? '<i class="badge">⭐</i>' : ''}</button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.scn').forEach(b => onTap(b, () => {
+      const sc = SCENES.find(x => x.id === b.dataset.id);
+      say(t(sc), state.lang);
+      go('scene', sc.id);
+    }));
+  },
+
+  scene(id) {
+    const sc = SCENES.find(x => x.id === id);
+    const s = h(`
+      <div class="screen scene-screen">
+        <div class="sc-root"></div>
+        <button class="back sc-back">⬅️</button>
+        <div class="sc-count">⭐ <b>0</b>/<span></span></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('explore'));
+    const count = s.querySelector('.sc-count');
+    view = new SceneView(s.querySelector('.sc-root'), sc, {
+      lang: state.lang,
+      onFind: (n, total) => {
+        count.querySelector('b').textContent = n;
+        count.classList.remove('bump'); void count.offsetWidth; count.classList.add('bump');
+      },
+      onAll: () => {
+        if (!state.explored.includes(sc.id)) { state.explored.push(sc.id); store.set('explored', state.explored); }
+        state.stars++; store.set('stars', state.stars);
+        cheer(); confetti(180);
+      },
+    });
+    count.querySelector('span').textContent = view.total;
   },
 
   album() {
