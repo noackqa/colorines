@@ -75,6 +75,42 @@ export const CATS = [
       { es: '¡Hasta luego!', en: 'See you later!', de: 'Bis später!' },
     ],
   },
+  {
+    id: 'cole', emoji: '🏫', bg: '#FFE6C7',
+    es: 'En el cole', en: 'At school', de: 'Im Kindergarten',
+    items: [
+      { es: '¡Buenos días, profe!', en: 'Good morning, teacher!', de: 'Guten Morgen!' },
+      { es: '¿Puedo ir al baño?', en: 'Can I go to the toilet?', de: 'Darf ich aufs Klo gehen?' },
+      { es: 'No lo entiendo. ¿Me lo explicas otra vez?', en: 'I don’t understand. Can you explain it again?', de: 'Das verstehe ich nicht. Kannst du es nochmal erklären?' },
+      { es: '¡Para, no me gusta!', en: 'Stop, I don’t like that!', de: 'Stopp, das mag ich nicht!' },
+      { es: '¡He terminado!', en: 'I’ve finished!', de: 'Ich bin fertig!' },
+      { es: '¿Cuándo vienen a buscarme?', en: 'When is someone coming to pick me up?', de: 'Wann werde ich abgeholt?' },
+    ],
+  },
+  {
+    id: 'medico', emoji: '🩺', bg: '#D4F1F4',
+    es: 'En el médico', en: 'At the doctor', de: 'Beim Arzt',
+    items: [
+      { es: 'Me duele la tripa.', en: 'My tummy hurts.', de: 'Mein Bauch tut weh.' },
+      { es: 'Me duele la garganta.', en: 'My throat hurts.', de: 'Mein Hals tut weh.' },
+      { es: 'Me encuentro mal.', en: 'I don’t feel well.', de: 'Mir geht es nicht gut.' },
+      { es: 'Tengo un poco de miedo.', en: 'I’m a little bit scared.', de: 'Ich habe ein bisschen Angst.' },
+      { es: '¿Me va a doler?', en: 'Will it hurt?', de: 'Tut das weh?' },
+      { es: '¡He sido muy valiente!', en: 'I was very brave!', de: 'Ich war ganz tapfer!' },
+    ],
+  },
+  {
+    id: 'parque', emoji: '🛝', bg: '#DFF7C8',
+    es: 'En el parque', en: 'At the park', de: 'Auf dem Spielplatz',
+    items: [
+      { es: '¡Empújame, por favor!', en: 'Push me, please!', de: 'Schubs mich bitte an!' },
+      { es: '¿Puedo tirarme por el tobogán?', en: 'Can I go down the slide?', de: 'Darf ich rutschen?' },
+      { es: '¡Mírame!', en: 'Watch me!', de: 'Guck mal!' },
+      { es: '¿Cómo te llamas?', en: 'What’s your name?', de: 'Wie heißt du?' },
+      { es: 'Cinco minutos más, por favor.', en: 'Five more minutes, please.', de: 'Noch fünf Minuten, bitte.' },
+      { es: 'Quiero ir a casa.', en: 'I want to go home.', de: 'Ich will nach Hause.' },
+    ],
+  },
 ];
 
 export const phraseImg = (cat, i) => `phrases/${cat.id}-${i + 1}.webp`;
