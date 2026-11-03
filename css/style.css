@@ -214,11 +214,11 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 
 /* ---------- mis frases ---------- */
 .c8 { background: #FFC1DA; } .c8 .emo { animation-delay: 3.5s; }
-.ph-cats { grid-template-columns: repeat(4, minmax(0, 1fr)); align-content: center; }
+.ph-cats { grid-template-columns: repeat(5, minmax(0, 1fr)); align-content: center; }
 .ph-cats { gap: 14px; }
 .ph-cats .scn { padding: 6px; gap: 4px; }
 .ph-cats .scn img { aspect-ratio: auto; height: max(100px, calc((100dvh - 170px) / 3 - 58px)); object-position: 50% 20%; }
-.ph-cats .scn .lbl { font-size: 22px; }
+.ph-cats .scn .lbl { font-size: 20px; }
 @media (orientation: portrait) { .ph-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ph-cats .scn img { height: auto; aspect-ratio: 4 / 3; } }
 .ph-cat { background: linear-gradient(var(--bg), #fff 70%); }
 .ph-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: 18px; }

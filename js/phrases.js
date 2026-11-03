@@ -135,6 +135,30 @@ export const CATS = [
       { es: '¡Gracias, adiós!', en: 'Thank you, bye-bye!', de: 'Danke, tschüss!' },
     ],
   },
+  {
+    id: 'casa', emoji: '🏠', bg: '#FFF0D9',
+    es: 'En casa', en: 'At home', de: 'Zu Hause',
+    items: [
+      { es: '¿Me ayudas a vestirme?', en: 'Can you help me get dressed?', de: 'Hilfst du mir beim Anziehen?' },
+      { es: 'Yo ayudo a recoger.', en: 'I’ll help tidy up.', de: 'Ich helfe beim Aufräumen.' },
+      { es: '¿Puedo ver los dibujos?', en: 'Can I watch cartoons?', de: 'Darf ich Zeichentrick gucken?' },
+      { es: '¿Puedo ayudarte a cocinar?', en: 'Can I help you cook?', de: 'Darf ich dir beim Kochen helfen?' },
+      { es: '¡Ya estoy en casa!', en: 'I’m home!', de: 'Ich bin wieder da!' },
+      { es: '¿Me das un beso?', en: 'Can I have a kiss?', de: 'Krieg ich einen Kuss?' },
+    ],
+  },
+  {
+    id: 'bano', emoji: '🛁', bg: '#D7F0FF',
+    es: 'En el baño', en: 'In the bathroom', de: 'Im Badezimmer',
+    items: [
+      { es: 'Quiero bañarme.', en: 'I want a bath.', de: 'Ich will baden.' },
+      { es: 'El agua está muy caliente.', en: 'The water is too hot.', de: 'Das Wasser ist zu heiß.' },
+      { es: 'Me pica el ojo.', en: 'The soap stings my eyes.', de: 'Die Seife brennt in den Augen.' },
+      { es: 'Me lavo los dientes.', en: 'I’m brushing my teeth.', de: 'Ich putze meine Zähne.' },
+      { es: '¡He hecho pis en el váter!', en: 'I did a wee in the toilet!', de: 'Ich hab Pipi aufs Klo gemacht!' },
+      { es: '¿Me das la toalla?', en: 'Can I have the towel?', de: 'Gibst du mir das Handtuch?' },
+    ],
+  },
 ];
 
 // img: dibujo rehecho con otro nombre (así la tablet no se queda con el viejo guardado).
