@@ -119,7 +119,7 @@ export const CATS = [
       { es: 'Me estoy mareando.', en: 'I feel car sick.', de: 'Mir ist schlecht.' },
       { es: 'Tengo que hacer pis.', en: 'I need a wee.', de: 'Ich muss Pipi.' },
       { es: '¿Me abrochas el cinturón?', en: 'Can you buckle my seatbelt?', de: 'Kannst du mich anschnallen?' },
-      { es: '¿Ponemos música?', en: 'Can we put some music on?', de: 'Machen wir Musik an?' },
+      { es: '¿Ponemos música?', en: 'Can we put some music on?', de: 'Machen wir Musik an?', img: 'coche-5b' },
       { es: '¡Mira, un camión!', en: 'Look, a truck!', de: 'Guck mal, ein Lastwagen!' },
     ],
   },
@@ -137,4 +137,5 @@ export const CATS = [
   },
 ];
 
-export const phraseImg = (cat, i) => `phrases/${cat.id}-${i + 1}.webp`;
+// img: dibujo rehecho con otro nombre (así la tablet no se queda con el viejo guardado).
+export const phraseImg = (cat, i) => `phrases/${cat.items[i].img ?? `${cat.id}-${i + 1}`}.webp`;
