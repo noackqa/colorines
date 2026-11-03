@@ -1,5 +1,5 @@
 // Funciona sin internet: guarda la app la primera vez y luego sirve desde caché.
-const VERSION = 'colorines-v15';
+const VERSION = 'colorines-v16';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/board.js', 'js/drawings.js', 'js/i18n.js', 'js/sound.js', 'js/confetti.js', 'js/trace.js', 'js/glyphs.js',
@@ -17,26 +17,50 @@ const SHELL = [
   'stories/mariposa-1.webp', 'stories/mariposa-2.webp', 'stories/mariposa-3.webp', 'stories/mariposa-4.webp', 'stories/mariposa-5.webp', 'stories/mariposa-6-mini.webp', 'stories/mariposa-6.webp', 'stories/pan-1.webp', 'stories/pan-2.webp', 'stories/pan-3.webp', 'stories/pan-4.webp', 'stories/pan-5.webp', 'stories/pan-6.webp', 'stories/pan-7.webp', 'stories/pan-8-mini.webp', 'stories/pan-8.webp', 'stories/tierra-1.webp', 'stories/tierra-2.webp', 'stories/tierra-3.webp', 'stories/tierra-4-mini.webp', 'stories/tierra-4.webp', 'audio/de-k01.mp3', 'audio/de-k02.mp3', 'audio/de-k03.mp3', 'audio/de-k04.mp3', 'audio/de-k05.mp3', 'audio/de-k06.mp3', 'audio/de-k07.mp3', 'audio/de-k08.mp3', 'audio/de-k09.mp3', 'audio/de-k10.mp3', 'audio/de-k11.mp3', 'audio/de-k12.mp3', 'audio/de-k13.mp3', 'audio/en-k01.mp3', 'audio/en-k02.mp3', 'audio/en-k03.mp3', 'audio/en-k04.mp3', 'audio/en-k05.mp3', 'audio/en-k06.mp3', 'audio/en-k07.mp3', 'audio/en-k08.mp3', 'audio/en-k09.mp3', 'audio/en-k10.mp3', 'audio/en-k11.mp3', 'audio/es-k01.mp3', 'audio/es-k02.mp3', 'audio/es-k03.mp3', 'audio/es-k04.mp3', 'audio/es-k05.mp3', 'audio/es-k06.mp3', 'audio/es-k07.mp3', 'audio/es-k08.mp3', 'audio/es-k09.mp3', 'audio/es-k10.mp3', 'audio/es-k11.mp3',
 ];
 
+// Lo pesado (voces y dibujos, ~70 MB) va en una caché aparte que no se borra al cambiar de
+// versión y se llena poco a poco en segundo plano: así el service worker se instala en un
+// momento (Chrome lo necesita para dejar instalar la app) y un fallo de red no lo tumba.
+const MEDIA = 'colorines-media';
+const isMedia = p => /\/(audio|img|scenes|stories)\/.+\.(mp3|png|webp)$/.test(p);
+const CORE = SHELL.filter(p => !isMedia('/' + p));
+const FILES = SHELL.filter(p => isMedia('/' + p));
+
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });
+
+let filling = null;
+function fillMedia() {
+  filling ??= (async () => {
+    const cache = await caches.open(MEDIA);
+    for (const p of FILES) {
+      if (await cache.match(p)) continue;
+      try { await cache.add(p); } catch { /* sin red: ya se intentará la próxima vez */ }
+    }
+  })().finally(() => { filling = null; });
+  return filling;
+}
 
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION && k !== MEDIA).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
+  fillMedia();
 });
 
+// La página lo pide al abrirse, por si el llenado se quedó a medias.
+self.addEventListener('message', e => { if (e.data === 'fill') e.waitUntil(fillMedia()); });
+
 // Red primero para la app (así se actualiza), caché si no hay conexión.
-// Audios y fuentes: caché primero.
+// Voces, dibujos y fuentes: caché primero.
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  const cacheFirst = url.pathname.includes('/audio/') || url.host.includes('fonts.');
+  const media = isMedia(url.pathname) || url.host.includes('fonts.');
   e.respondWith((async () => {
-    const cache = await caches.open(VERSION);
-    if (cacheFirst) {
-      const hit = await cache.match(req);
+    const cache = await caches.open(media ? MEDIA : VERSION);
+    if (media) {
+      const hit = await cache.match(req, { ignoreSearch: true });
       if (hit) return hit;
     }
     try {
@@ -44,7 +68,7 @@ self.addEventListener('fetch', e => {
       if (res.ok || res.type === 'opaque') cache.put(req, res.clone());
       return res;
     } catch {
-      return (await cache.match(req, { ignoreSearch: true })) || Response.error();
+      return (await caches.match(req, { ignoreSearch: true })) || Response.error();
     }
   })());
 });

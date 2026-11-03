@@ -612,4 +612,6 @@ go('home');
 
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
   navigator.serviceWorker.register('sw.js').catch(() => {});
+  // termina de guardar voces y dibujos para usarla sin internet
+  navigator.serviceWorker.ready.then(r => r.active?.postMessage('fill')).catch(() => {});
 }

@@ -1,6 +1,7 @@
 {
   "name": "Colorines",
   "short_name": "Colorines",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
