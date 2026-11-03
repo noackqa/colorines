@@ -211,3 +211,48 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 .st-end { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 24px; background: rgba(0, 0, 0, .25); z-index: 6; animation: stcap .4s ease; }
 .st-end button { font-size: 40px; font-weight: 800; padding: 20px 36px; border-radius: 30px; background: #fff; box-shadow: 0 6px 0 rgba(0, 0, 0, .15); }
 .st-end .again { background: #FFC93C; }
+
+/* ---------- mis frases ---------- */
+.c8 { background: #FFC1DA; } .c8 .emo { animation-delay: 3.5s; }
+.ph-cats { grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; }
+.ph-cats .scn img { aspect-ratio: auto; height: max(140px, calc((100dvh - 210px) / 2 - 46px)); object-position: 50% 20%; }
+@media (orientation: portrait) { .ph-cats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ph-cats .scn img { height: auto; aspect-ratio: 4 / 3; } }
+.ph-cat { background: linear-gradient(var(--bg), #fff 70%); }
+.ph-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; gap: 18px; }
+@media (orientation: portrait) { .ph-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ph-card { position: relative; padding: 8px 8px 10px; border-radius: 26px; display: flex; flex-direction: column; gap: 6px; }
+.ph-card img { width: 100%; aspect-ratio: 4 / 3; max-height: calc((100dvh - 230px) / 2 - 60px); object-fit: cover; object-position: 50% 25%; border-radius: 18px; display: block; }
+.ph-card .lbl { font-size: clamp(18px, 2.2vw, 26px); font-weight: 800; line-height: 1.15; min-height: 2.3em; display: flex; align-items: center; justify-content: center; text-align: center; }
+.ph-card .badge, .ph-cats .badge { position: absolute; top: 2px; right: 8px; font-size: 32px; font-style: normal; }
+.ph-cats .badge small { font-size: 20px; font-weight: 800; background: #fff; border-radius: 20px; padding: 2px 10px; box-shadow: var(--shadow); }
+
+.ph-one { background: linear-gradient(var(--bg), #fff 75%); }
+.ph-one .bar { justify-content: flex-start; }
+.ph-dots { display: flex; gap: 10px; margin: 0 auto; }
+.ph-dots i { width: 16px; height: 16px; border-radius: 50%; background: rgba(58, 46, 92, .18); }
+.ph-dots i.on { background: var(--ink); transform: scale(1.25); }
+.ph-main { flex: 1; min-height: 0; display: flex; align-items: center; gap: 18px; }
+.ph-pic { flex: 1.25; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
+.ph-pic img { max-width: 100%; max-height: 100%; border-radius: 30px; box-shadow: 0 10px 0 rgba(58, 46, 92, .15); display: block; }
+.ph-pic.talk img { animation: phtalk .6s ease-in-out infinite; }
+@keyframes phtalk { 50% { transform: scale(1.03) rotate(-1deg); } }
+.ph-side { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 28px; }
+.ph-text { margin: 0; font-size: clamp(30px, 4vw, 54px); font-weight: 800; line-height: 1.15; text-align: center; transition: color .3s, transform .3s; }
+.ph-text.talk { color: #E2457F; transform: scale(1.04); }
+.ph-btns { display: flex; gap: 22px; flex-wrap: wrap; justify-content: center; }
+.ph-b { width: clamp(84px, 9vw, 112px); height: clamp(84px, 9vw, 112px); border-radius: 50%; font-size: clamp(40px, 4.6vw, 56px); display: flex; align-items: center; justify-content: center; }
+.ph-b.mic { background: #FFE14D; position: relative; }
+.ph-b.mic.rec { background: #FF5A6E; animation: none; }
+.ph-b.mic.rec::after { content: ''; position: absolute; inset: -10px; border-radius: 50%; border: 6px solid #FF5A6E; opacity: .7; transform: scale(calc(1 + var(--lv, 0) * .45)); transition: transform .08s; }
+.ph-b.me { background: #C9F2C2; }
+.ph-b[hidden] { display: none; }
+.ph-one.busy .ph-b:not(.rec), .ph-one.busy .ph-nav { opacity: .45; pointer-events: none; }
+.ph-nav { width: 70px; height: 120px; font-size: 40px; flex: none; border-radius: 26px; }
+.ph-nav:disabled { visibility: hidden; }
+@media (orientation: portrait) {
+  .ph-main { flex-direction: column; gap: 14px; }
+  .ph-pic { flex: none; height: auto; max-height: 45vh; }
+  .ph-nav { position: absolute; bottom: 24px; height: 90px; }
+  .ph-nav.prev { left: 20px; } .ph-nav.next { right: 20px; }
+  .ph-one { position: relative; }
+}

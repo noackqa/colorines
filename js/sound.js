@@ -82,7 +82,7 @@ export function preloadVoice(lang) {
   files.forEach(f => buffer(f).catch(() => {}));
 }
 
-async function playClip([file, start, end]) {
+async function playClip([file, start, end], rate = 1) {
   const buf = await buffer(file);
   // Margen para no cortar consonantes suaves (f, s, z) al principio o al final.
   start = Math.max(0, start - 0.08);
@@ -93,11 +93,12 @@ async function playClip([file, start, end]) {
   for (let i = a; i < b; i += 4) peak = Math.max(peak, Math.abs(d[i]));
   const src = c.createBufferSource(), g = c.createGain();
   src.buffer = buf;
+  src.playbackRate.value = rate;
   g.gain.value = Math.min(6, 0.9 / peak);
   src.connect(g).connect(c.destination);
   src.start(0, start, end - start);
   current = src;
-  return end - start;
+  return (end - start) / rate;
 }
 
 // Clave de archivo a partir del texto: "¡Muy bien!" -> "muy-bien"
@@ -118,9 +119,10 @@ let token = 0;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // Dice una frase. Devuelve una promesa que se cumple cuando termina (aprox.).
-export function say(text, lang) {
+// rate < 1 la dice más despacio (para practicar frases).
+export function say(text, lang, { rate = 1 } = {}) {
   token++;
-  return sayOne(text, lang);
+  return sayOne(text, lang, rate);
 }
 
 // Dice varias frases seguidas ("dos", "más", "uno"…). Se corta si empieza otra frase.
@@ -133,7 +135,7 @@ export async function sayQueue(texts, lang, gap = 90) {
   }
 }
 
-async function sayOne(text, lang) {
+async function sayOne(text, lang, rate = 1) {
   if (muted || !text) return;
   const key = keyOf(text);
   try { current?.stop(); } catch {}
@@ -141,18 +143,18 @@ async function sayOne(text, lang) {
   if ('speechSynthesis' in window) speechSynthesis.cancel();
   const clip = audioIndex[lang]?.[key];
   if (clip) {
-    try { const dur = await playClip(clip); await sleep(dur * 1000); return; } catch {}
+    try { const dur = await playClip(clip, rate); await sleep(dur * 1000); return; } catch {}
   }
-  await speak(text, lang);
+  await speak(text, lang, rate);
 }
 
-function speak(text, lang) {
+function speak(text, lang, rate = 1) {
   if (!('speechSynthesis' in window)) return Promise.resolve();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = VOICE_LANG[lang];
   const v = pickVoice(lang);
   if (v) u.voice = v;
-  u.rate = 0.9;
+  u.rate = 0.9 * rate;
   u.pitch = 1.15;
   return new Promise(res => {
     u.onend = u.onerror = res;

@@ -7,6 +7,8 @@ import { Tracer } from './trace.js';
 import { SceneView } from './explore.js';
 import { SCENES } from './scenes.js';
 import { STORIES, StoryView, imgOf } from './howto.js';
+import { CATS, phraseImg } from './phrases.js';
+import { canRecord, listen, playBlob, releaseMic } from './practice.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -21,6 +23,7 @@ const state = {
   traced: store.get('traced', []),
   explored: store.get('explored', []),
   watched: store.get('watched', []),
+  practiced: store.get('practiced', []),
   mathLevel: store.get('mathLevel', 1),
   perfectRounds: store.get('perfectRounds', 0),
 };
@@ -37,6 +40,7 @@ function go(screen, ...args) {
   clearTimeout(idleTimer);
   tracer?.destroy(); tracer = null;
   view?.destroy(); view = null;
+  releaseMic();
   document.querySelectorAll('.modal, .counting').forEach(m => m.remove());
   app.innerHTML = '';
   SCREENS[screen](...args);
@@ -58,6 +62,7 @@ const SCREENS = {
         </header>
         <h1 class="title">${title}</h1>
         <div class="cards">
+          <button class="card c8" data-go="phrases"><span class="emo">💬</span><span class="lbl">${t(UI.phrases)}</span></button>
           <button class="card c1" data-go="themes"><span class="emo">🖍️</span><span class="lbl">${t(UI.color)}</span></button>
           <button class="card c2" data-go="free"><span class="emo">🎨</span><span class="lbl">${t(UI.free)}</span></button>
           <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
@@ -70,7 +75,7 @@ const SCREENS = {
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto, phrases: UI.phrases }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     onTap(s.querySelector('.flag'), () => {
@@ -469,6 +474,105 @@ const SCREENS = {
         onTap(end.querySelector('.menu'), () => go('howto'));
       },
     });
+  },
+
+  // ---------- mis frases ----------
+  phrases() {
+    const s = h(`
+      <div class="screen explore-menu">
+        <header class="bar"><button class="back">🏠</button><span class="heading">💬 ${t(UI.phrases)}</span></header>
+        <div class="grid scenes ph-cats">
+          ${CATS.map(c => {
+            const n = c.items.filter((_, i) => state.practiced.includes(`${c.id}-${i}`)).length;
+            return `<button class="scn" data-id="${c.id}" style="--bg:${c.bg}"><img src="${phraseImg(c, 0)}" alt="" loading="lazy"><span class="lbl">${c.emoji} ${t(c)}</span>${n ? `<i class="badge">${n === c.items.length ? '⭐' : `<small>${n}/${c.items.length}</small>`}</i>` : ''}</button>`;
+          }).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.scn').forEach(b => onTap(b, () => {
+      const c = CATS.find(x => x.id === b.dataset.id);
+      say(t(c), state.lang);
+      go('phraseCat', c.id);
+    }));
+  },
+
+  phraseCat(id) {
+    const c = CATS.find(x => x.id === id);
+    const s = h(`
+      <div class="screen ph-cat" style="--bg:${c.bg}">
+        <header class="bar"><button class="back">⬅️</button><span class="heading">${c.emoji} ${t(c)}</span></header>
+        <div class="grid ph-grid">
+          ${c.items.map((it, i) => `<button class="ph-card" data-i="${i}"><img src="${phraseImg(c, i)}" alt=""><span class="lbl">${t(it)}</span>${state.practiced.includes(`${c.id}-${i}`) ? '<i class="badge">⭐</i>' : ''}</button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('phrases'));
+    s.querySelectorAll('.ph-card').forEach(b => onTap(b, () => go('phrase', c.id, +b.dataset.i)));
+  },
+
+  // Una frase en grande: se oye sola al entrar; 🔊 otra vez, 🐢 despacio, 🎤 practicar
+  // (la app dice "¡Ahora tú!", la graba, le pone su propia voz y la felicita).
+  phrase(id, i) {
+    const c = CATS.find(x => x.id === id), it = c.items[i], text = t(it), key = `${c.id}-${i}`;
+    const s = h(`
+      <div class="screen ph-one" style="--bg:${c.bg}">
+        <header class="bar"><button class="back">⬅️</button><span class="ph-dots">${c.items.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</span><span class="heading">${c.emoji}</span></header>
+        <div class="ph-main">
+          <button class="ph-nav prev" ${i === 0 ? 'disabled' : ''}>◀</button>
+          <div class="ph-pic"><img src="${phraseImg(c, i)}" alt=""></div>
+          <div class="ph-side">
+            <p class="ph-text">${text}</p>
+            <div class="ph-btns">
+              <button class="ph-b listen" aria-label="escuchar">🔊</button>
+              <button class="ph-b slow" aria-label="despacio">🐢</button>
+              ${canRecord() ? '<button class="ph-b mic" aria-label="ahora tú">🎤</button>' : ''}
+              <button class="ph-b me" hidden aria-label="mi voz">🦜</button>
+            </div>
+          </div>
+          <button class="ph-nav next" ${i === c.items.length - 1 ? 'disabled' : ''}>▶</button>
+        </div>
+      </div>`);
+    app.append(s);
+    const pic = s.querySelector('.ph-pic'), txt = s.querySelector('.ph-text'), me = s.querySelector('.me');
+    let busy = false, mine = null;
+    const speak = async (rate = 1) => {
+      pic.classList.add('talk'); txt.classList.add('talk');
+      await say(text, state.lang, { rate });
+      pic.classList.remove('talk'); txt.classList.remove('talk');
+    };
+    onTap(s.querySelector('.back'), () => go('phraseCat', c.id));
+    onTap(s.querySelector('.prev'), () => i > 0 && go('phrase', c.id, i - 1));
+    onTap(s.querySelector('.next'), () => i < c.items.length - 1 && go('phrase', c.id, i + 1));
+    onTap(s.querySelector('.listen'), () => !busy && speak());
+    onTap(s.querySelector('.slow'), () => !busy && speak(0.78));
+    onTap(pic, () => !busy && speak());
+    onTap(me, () => mine && !busy && playBlob(mine));
+    const micBtn = s.querySelector('.mic');
+    if (micBtn) onTap(micBtn, async () => {
+      if (busy) return;
+      busy = true; s.classList.add('busy');
+      await say(t(UI.yourTurn), state.lang);
+      micBtn.classList.add('rec');
+      const res = await listen({ onLevel: v => micBtn.style.setProperty('--lv', v.toFixed(2)) });
+      micBtn.classList.remove('rec');
+      if (!s.isConnected) return;
+      if (res?.spoke) {
+        mine = res.blob; me.hidden = false;
+        await playBlob(mine);
+        if (!s.isConnected) return;
+        sfx.fanfare(); confetti(120);
+        await say(t(UI.wellSaid), state.lang);
+        if (!state.practiced.includes(key)) {
+          state.practiced.push(key); store.set('practiced', state.practiced);
+          state.stars++; store.set('stars', state.stars);
+        }
+      } else {
+        await speak(); // no se ha oído nada (o no hay micro): se lo repite y ya está
+      }
+      busy = false; s.classList.remove('busy');
+    });
+    speak();
   },
 
   album() {
