@@ -259,3 +259,15 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
   .ph-nav.prev { left: 20px; } .ph-nav.next { right: 20px; }
   .ph-one { position: relative; }
 }
+
+/* ---------- ajustes para mayores ---------- */
+.bar-r { display: flex; gap: 12px; align-items: center; }
+.gear { opacity: .35; font-size: 30px !important; width: 60px !important; height: 60px !important; box-shadow: none; background: transparent; position: relative; }
+.gear.holding { opacity: 1; animation: gearspin 2s linear; }
+@keyframes gearspin { to { transform: rotate(360deg) scale(1.15); } }
+.setopts { display: flex; flex-direction: column; gap: 18px; max-width: 760px; width: 100%; margin: 20px auto; }
+.setopt { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 22px 26px; font-size: 26px; font-weight: 800; text-align: left; border-radius: 26px; }
+.setopt .sw { flex: none; width: 76px; height: 42px; border-radius: 21px; background: #D9D4E6; position: relative; transition: background .2s; }
+.setopt .sw::after { content: ''; position: absolute; top: 4px; left: 4px; width: 34px; height: 34px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0, 0, 0, .2); transition: transform .2s; }
+.setopt[aria-pressed="true"] .sw { background: #5BD15B; }
+.setopt[aria-pressed="true"] .sw::after { transform: translateX(34px); }

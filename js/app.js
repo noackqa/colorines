@@ -24,6 +24,7 @@ const state = {
   explored: store.get('explored', []),
   watched: store.get('watched', []),
   practiced: store.get('practiced', []),
+  opts: { slow: false, mic: false, ...store.get('opts', {}) }, // ajustes de mayores (⚙️)
   mathLevel: store.get('mathLevel', 1),
   perfectRounds: store.get('perfectRounds', 0),
 };
@@ -45,6 +46,13 @@ function go(screen, ...args) {
   app.innerHTML = '';
   SCREENS[screen](...args);
 }
+// Mantener pulsado ~2 s para abrir (así la niña no entra sin querer en los ajustes).
+function holdToOpen(el, fn, ms = 2000) {
+  let t = null;
+  const stop = () => { clearTimeout(t); el.classList.remove('holding'); };
+  el.addEventListener('pointerdown', () => { el.classList.add('holding'); t = setTimeout(() => { stop(); sfx.tap(); fn(); }, ms); });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => el.addEventListener(ev, stop));
+}
 function onTap(el, fn) {
   el.addEventListener('click', e => { sfx.tap(); fn(e); });
 }
@@ -58,7 +66,7 @@ const SCREENS = {
       <div class="screen home">
         <header class="bar">
           <div class="stars">⭐ <b>${state.stars}</b></div>
-          <button class="flag" aria-label="idioma">${FLAGS[state.lang]}</button>
+          <span class="bar-r"><button class="gear" aria-label="ajustes">⚙️</button><button class="flag" aria-label="idioma">${FLAGS[state.lang]}</button></span>
         </header>
         <h1 class="title">${title}</h1>
         <div class="cards">
@@ -78,6 +86,7 @@ const SCREENS = {
       say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto, phrases: UI.phrases }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
+    holdToOpen(s.querySelector('.gear'), () => go('settings'));
     onTap(s.querySelector('.flag'), () => {
       state.lang = LANGS[(LANGS.indexOf(state.lang) + 1) % LANGS.length];
       store.set('lang', state.lang);
@@ -525,8 +534,8 @@ const SCREENS = {
             <p class="ph-text">${text}</p>
             <div class="ph-btns">
               <button class="ph-b listen" aria-label="escuchar">🔊</button>
-              <button class="ph-b slow" aria-label="despacio">🐢</button>
-              ${canRecord() ? '<button class="ph-b mic" aria-label="ahora tú">🎤</button>' : ''}
+              ${state.opts.slow ? '<button class="ph-b slow" aria-label="despacio">🐢</button>' : ''}
+              ${state.opts.mic && canRecord() ? '<button class="ph-b mic" aria-label="ahora tú">🎤</button>' : ''}
               <button class="ph-b me" hidden aria-label="mi voz">🦜</button>
             </div>
           </div>
@@ -545,7 +554,8 @@ const SCREENS = {
     onTap(s.querySelector('.prev'), () => i > 0 && go('phrase', c.id, i - 1));
     onTap(s.querySelector('.next'), () => i < c.items.length - 1 && go('phrase', c.id, i + 1));
     onTap(s.querySelector('.listen'), () => !busy && speak());
-    onTap(s.querySelector('.slow'), () => !busy && speak(0.78));
+    const slowBtn = s.querySelector('.slow');
+    if (slowBtn) onTap(slowBtn, () => !busy && speak(0.78));
     onTap(pic, () => !busy && speak());
     onTap(me, () => mine && !busy && playBlob(mine));
     const micBtn = s.querySelector('.mic');
@@ -573,6 +583,25 @@ const SCREENS = {
       busy = false; s.classList.remove('busy');
     });
     speak();
+  },
+
+  // Ajustes para mayores: se entra manteniendo pulsado ⚙️ en el inicio. Solo texto (no se dice en voz alta).
+  settings() {
+    const rows = [['slow', UI.optSlow], ['mic', UI.optMic]];
+    const s = h(`
+      <div class="screen settings">
+        <header class="bar"><button class="back">🏠</button><span class="heading">⚙️ ${t(UI.settings)}</span></header>
+        <div class="setopts">
+          ${rows.map(([k, l]) => `<button class="setopt" data-k="${k}" aria-pressed="${state.opts[k]}"><span>${t(l)}</span><i class="sw"></i></button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.setopt').forEach(b => onTap(b, () => {
+      const k = b.dataset.k;
+      state.opts[k] = !state.opts[k]; store.set('opts', state.opts);
+      b.setAttribute('aria-pressed', state.opts[k]);
+    }));
   },
 
   album() {
