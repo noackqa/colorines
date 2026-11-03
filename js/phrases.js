@@ -111,6 +111,30 @@ export const CATS = [
       { es: 'Quiero ir a casa.', en: 'I want to go home.', de: 'Ich will nach Hause.' },
     ],
   },
+  {
+    id: 'coche', emoji: '🚗', bg: '#D6E4FF',
+    es: 'En el coche', en: 'In the car', de: 'Im Auto',
+    items: [
+      { es: '¿Cuándo llegamos?', en: 'Are we there yet?', de: 'Sind wir bald da?' },
+      { es: 'Me estoy mareando.', en: 'I feel car sick.', de: 'Mir ist schlecht.' },
+      { es: 'Tengo que hacer pis.', en: 'I need a wee.', de: 'Ich muss Pipi.' },
+      { es: '¿Me abrochas el cinturón?', en: 'Can you buckle my seatbelt?', de: 'Kannst du mich anschnallen?' },
+      { es: '¿Ponemos música?', en: 'Can we put some music on?', de: 'Machen wir Musik an?' },
+      { es: '¡Mira, un camión!', en: 'Look, a truck!', de: 'Guck mal, ein Lastwagen!' },
+    ],
+  },
+  {
+    id: 'tienda', emoji: '🛒', bg: '#FFE3D1',
+    es: 'En la tienda', en: 'At the shop', de: 'Im Laden',
+    items: [
+      { es: '¿Puedo empujar el carro?', en: 'Can I push the trolley?', de: 'Darf ich den Wagen schieben?' },
+      { es: '¿Me compras esto, por favor?', en: 'Can you buy me this, please?', de: 'Kaufst du mir das bitte?' },
+      { es: 'Vale, hoy no.', en: 'Okay, not today.', de: 'Okay, heute nicht.' },
+      { es: '¿Puedo pagar yo?', en: 'Can I pay?', de: 'Darf ich bezahlen?' },
+      { es: 'Hola, quería pan, por favor.', en: 'Hello, I’d like some bread, please.', de: 'Hallo, ich hätte gern ein Brot, bitte.' },
+      { es: '¡Gracias, adiós!', en: 'Thank you, bye-bye!', de: 'Danke, tschüss!' },
+    ],
+  },
 ];
 
 export const phraseImg = (cat, i) => `phrases/${cat.id}-${i + 1}.webp`;
