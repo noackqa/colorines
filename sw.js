@@ -1,5 +1,5 @@
 // Funciona sin internet: guarda la app la primera vez y luego sirve desde caché.
-const VERSION = 'colorines-v14';
+const VERSION = 'colorines-v15';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/board.js', 'js/drawings.js', 'js/i18n.js', 'js/sound.js', 'js/confetti.js', 'js/trace.js', 'js/glyphs.js',

@@ -591,11 +591,21 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('pointerdown', () => {
   sfx.unlock();
   preloadVoice(state.lang);
-  const standalone = matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;
-  if (!standalone && !document.fullscreenElement && document.documentElement.requestFullscreen && matchMedia('(pointer: coarse)').matches) {
-    document.documentElement.requestFullscreen().then(() => screen.orientation?.lock?.('landscape')).catch(() => {});
-  }
 }, { once: true });
+
+// Pantalla completa en la tablet: se pide en cada toque mientras no lo esté (si un gesto la
+// quita, el siguiente toque la recupera). Va en pointerup porque en táctil pointerdown no
+// cuenta como gesto del usuario para el navegador.
+// El gesto de "atrás" de Android tampoco cierra la app: cada toque deja preparada una entrada
+// de historial de más, y "atrás" solo la gasta (Chrome ignora las que no vienen de un toque).
+const touchDevice = matchMedia('(pointer: coarse)').matches;
+document.addEventListener('pointerup', () => {
+  if (!history.state?.trap) history.pushState({ trap: 1 }, '');
+  if (!touchDevice || document.fullscreenElement || !document.documentElement.requestFullscreen) return;
+  if (matchMedia('(display-mode: fullscreen)').matches) return;
+  document.documentElement.requestFullscreen({ navigationUI: 'hide' })
+    .then(() => screen.orientation?.lock?.('landscape')).catch(() => {});
+}, true);
 
 initVoice();
 go('home');
