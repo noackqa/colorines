@@ -9,6 +9,7 @@ import { SCENES } from './scenes.js';
 import { STORIES, StoryView, imgOf } from './howto.js';
 import { CATS, phraseImg } from './phrases.js';
 import { canRecord, listen, playBlob, releaseMic } from './practice.js';
+import { Memory, Match3, Blocks } from './games.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -71,6 +72,7 @@ const SCREENS = {
         <h1 class="title">${title}</h1>
         <div class="cards">
           <button class="card c8" data-go="phrases"><span class="emo">💬</span><span class="lbl">${t(UI.phrases)}</span></button>
+          <button class="card c9" data-go="games"><span class="emo">🎲</span><span class="lbl">${t(UI.games)}</span></button>
           <button class="card c1" data-go="themes"><span class="emo">🖍️</span><span class="lbl">${t(UI.color)}</span></button>
           <button class="card c2" data-go="free"><span class="emo">🎨</span><span class="lbl">${t(UI.free)}</span></button>
           <button class="card c4" data-go="learn"><span class="emo">🔤</span><span class="lbl">${t(UI.learn)}</span></button>
@@ -83,7 +85,7 @@ const SCREENS = {
     app.append(s);
     s.querySelectorAll('.card').forEach(b => onTap(b, () => {
       const k = b.dataset.go;
-      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto, phrases: UI.phrases }[k]), state.lang);
+      say(t({ themes: UI.color, free: UI.free, album: UI.album, learn: UI.learn, math: UI.math, explore: UI.explore, howto: UI.howto, phrases: UI.phrases, games: UI.games }[k]), state.lang);
       go(k === 'free' ? 'paint' : k, null);
     }));
     holdToOpen(s.querySelector('.gear'), () => go('settings'));
@@ -583,6 +585,83 @@ const SCREENS = {
       busy = false; s.classList.remove('busy');
     });
     speak();
+  },
+
+  // ---------- juegos ----------
+  games() {
+    const G = [['memory', '🃏', UI.memory, 'g1'], ['match3', '🍓', UI.match3, 'g2'], ['blocks', '🧱', UI.blocks, 'g3']];
+    const s = h(`
+      <div class="screen games-menu">
+        <header class="bar"><button class="back">🏠</button><span class="heading">🎲 ${t(UI.games)}</span></header>
+        <div class="cards game-cards">
+          ${G.map(([k, e, l, c]) => `<button class="card ${c}" data-k="${k}"><span class="emo">${e}</span><span class="lbl">${t(l)}</span></button>`).join('')}
+        </div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('home'));
+    s.querySelectorAll('.card').forEach(b => onTap(b, () => {
+      say(t(G.find(g => g[0] === b.dataset.k)[2]), state.lang);
+      go(b.dataset.k);
+    }));
+  },
+
+  memory(pairs = store.get('memPairs', 4)) {
+    const s = h(`
+      <div class="screen game-screen">
+        <header class="bar"><button class="back">⬅️</button>
+          <span class="mem-sizes">${[4, 6, 8].map(n => `<button class="msize ${n === pairs ? 'on' : ''}" data-n="${n}">${'🃏'.repeat(n / 2)}</button>`).join('')}</span>
+        </header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('games'));
+    s.querySelectorAll('.msize').forEach(b => onTap(b, () => { store.set('memPairs', +b.dataset.n); go('memory', +b.dataset.n); }));
+    view = new Memory(s.querySelector('.game-root'), {
+      pairs,
+      onWin: () => {
+        state.stars++; store.set('stars', state.stars);
+        cheer();
+        const end = h(`<div class="st-end"><button class="again">🔁 ${t(UI.again)}</button><button class="menu">🎲</button></div>`);
+        s.append(end);
+        onTap(end.querySelector('.again'), () => go('memory', pairs));
+        onTap(end.querySelector('.menu'), () => go('games'));
+      },
+    });
+  },
+
+  match3() {
+    const s = h(`
+      <div class="screen game-screen">
+        <header class="bar"><button class="back">⬅️</button><span class="jar"><i></i><b>🫙</b></span></header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('games'));
+    const fill = s.querySelector('.jar i');
+    view = new Match3(s.querySelector('.game-root'), {
+      onProgress: k => fill.style.width = (k * 100).toFixed(0) + '%',
+      onFull: () => { state.stars++; store.set('stars', state.stars); cheer(); },
+    });
+  },
+
+  blocks() {
+    let rows = 0;
+    const s = h(`
+      <div class="screen game-screen">
+        <header class="bar"><button class="back">⬅️</button><span class="stars bk-count">✨ <b>0</b></span></header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('games'));
+    const count = s.querySelector('.bk-count b');
+    view = new Blocks(s.querySelector('.game-root'), {
+      onRow: n => {
+        rows += n; count.textContent = rows;
+        if (Math.floor(rows / 5) > Math.floor((rows - n) / 5)) { state.stars++; store.set('stars', state.stars); cheer(); }
+        else confetti(40);
+      },
+      onFull: () => { sfx.sparkle(); say(PRAISE[state.lang][0], state.lang); },
+    });
   },
 
   // Ajustes para mayores: se entra manteniendo pulsado ⚙️ en el inicio. Solo texto (no se dice en voz alta).

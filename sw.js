@@ -1,5 +1,5 @@
 // Funciona sin internet: guarda la app la primera vez y luego sirve desde caché.
-const VERSION = 'colorines-v22';
+const VERSION = 'colorines-v23';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/board.js', 'js/drawings.js', 'js/i18n.js', 'js/sound.js', 'js/confetti.js', 'js/trace.js', 'js/glyphs.js',
@@ -19,6 +19,7 @@ const SHELL = [
   'phrases/cole-1.webp', 'phrases/cole-2.webp', 'phrases/cole-3.webp', 'phrases/cole-4.webp', 'phrases/cole-5.webp', 'phrases/cole-6.webp', 'phrases/medico-1.webp', 'phrases/medico-2.webp', 'phrases/medico-3.webp', 'phrases/medico-4.webp', 'phrases/medico-5.webp', 'phrases/medico-6.webp', 'phrases/parque-1.webp', 'phrases/parque-2.webp', 'phrases/parque-3.webp', 'phrases/parque-4.webp', 'phrases/parque-5.webp', 'phrases/parque-6.webp', 'audio/de-g01.mp3', 'audio/de-g02.mp3', 'audio/de-g03.mp3', 'audio/de-g04.mp3', 'audio/de-g05.mp3', 'audio/en-g01.mp3', 'audio/en-g02.mp3', 'audio/en-g03.mp3', 'audio/en-g04.mp3', 'audio/en-g05.mp3', 'audio/es-g01.mp3', 'audio/es-g02.mp3', 'audio/es-g03.mp3', 'audio/es-g04.mp3', 'audio/es-g05.mp3',
   'phrases/coche-1.webp', 'phrases/coche-2.webp', 'phrases/coche-3.webp', 'phrases/coche-4.webp', 'phrases/coche-5b.webp', 'phrases/coche-6.webp', 'phrases/tienda-1.webp', 'phrases/tienda-2.webp', 'phrases/tienda-3.webp', 'phrases/tienda-4.webp', 'phrases/tienda-5.webp', 'phrases/tienda-6.webp', 'audio/de-j01.mp3', 'audio/de-j02.mp3', 'audio/de-j03.mp3', 'audio/en-j01.mp3', 'audio/en-j02.mp3', 'audio/en-j03.mp3', 'audio/es-j01.mp3', 'audio/es-j02.mp3', 'audio/es-j03.mp3',
   'phrases/bano-1.webp', 'phrases/bano-2.webp', 'phrases/bano-3.webp', 'phrases/bano-4.webp', 'phrases/bano-5.webp', 'phrases/bano-6.webp', 'phrases/casa-1.webp', 'phrases/casa-2.webp', 'phrases/casa-3.webp', 'phrases/casa-4.webp', 'phrases/casa-5.webp', 'phrases/casa-6.webp', 'audio/de-p01.mp3', 'audio/de-p02.mp3', 'audio/de-p03.mp3', 'audio/en-p01.mp3', 'audio/en-p02.mp3', 'audio/en-p03.mp3', 'audio/es-p01.mp3', 'audio/es-p02.mp3', 'audio/es-p03.mp3',
+  'js/games.js', 'audio/es-q01.mp3', 'audio/en-q01.mp3', 'audio/de-q01.mp3',
 ];
 
 // Lo pesado (voces y dibujos, ~70 MB) va en una caché aparte que no se borra al cambiar de
