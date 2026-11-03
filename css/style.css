@@ -334,3 +334,16 @@ button:active { transform: translateY(5px) scale(.97); box-shadow: 0 3px 0 rgba(
 .sh-opt { width: min(22vh, 18vw); height: min(22vh, 18vw); font-size: min(14vh, 11vw); border-radius: 34px; display: flex; align-items: center; justify-content: center; }
 .sh-opt.no { animation: shake .4s; }
 .sh-opt.yes { background: #DFF7D8; transform: scale(1.1); }
+.g6 { background: #FFDCC7; }
+.game-cards:has(> :nth-child(6)) { grid-template-columns: repeat(3, minmax(0, min(240px, 24vw, 30vh))); }
+.pz-pick { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); align-content: start; }
+.pz-thumb { padding: 8px; border-radius: 22px; }
+.pz-thumb img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 16px; display: block; background: #fff; }
+.pz-thumb.mine { background: #FFF3B0; }
+.pz { position: relative; width: 100%; height: 100%; overflow: hidden; touch-action: none; }
+.pz-board { position: absolute; border-radius: 14px; background-size: 100% 100%; opacity: .28; box-shadow: inset 0 0 0 4px rgba(58, 46, 92, .25); transition: opacity .5s; }
+.pz-board.whole { opacity: 1; }
+.pz-p { position: absolute; left: 0; top: 0; border-radius: 10px; box-shadow: 0 6px 14px rgba(0, 0, 0, .25), inset 0 0 0 3px rgba(255, 255, 255, .7); touch-action: none; cursor: grab; transition: box-shadow .2s; }
+.pz-p.drag { box-shadow: 0 14px 28px rgba(0, 0, 0, .35), inset 0 0 0 3px #fff; transition: none; }
+.pz-p.done { box-shadow: none; border-radius: 0; animation: pzsnap .45s ease; }
+@keyframes pzsnap { 40% { filter: brightness(1.45); } }

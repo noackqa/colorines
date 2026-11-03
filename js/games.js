@@ -466,3 +466,95 @@ export class Shadows {
 
   destroy() {}
 }
+
+// ---------- Puzle ----------
+// El dibujo se ve clarito en el tablero y las piezas están alrededor. Se arrastran; al
+// soltar cerca de su sitio encajan solas. Si no, se quedan donde se soltaron (sin castigo).
+export class Puzzle {
+  constructor(root, { src, n = 2, onPlace = () => {}, onWin = () => {} }) {
+    this.root = root; this.src = src; this.n = n; this.onPlace = onPlace; this.onWin = onWin;
+    root.innerHTML = `<div class="pz"><div class="pz-board"></div></div>`;
+    this.box = root.querySelector('.pz'); this.boardEl = root.querySelector('.pz-board');
+    this.pieces = [];
+    const img = new Image();
+    img.onload = () => { if (this.dead) return; this.aspect = img.naturalWidth / img.naturalHeight; this.build(); };
+    img.src = src;
+  }
+
+  build() {
+    const n = this.n;
+    this.boardEl.style.backgroundImage = `url("${this.src}")`;
+    const order = shuffle([...Array(n * n).keys()]);
+    for (const k of order) {
+      const el = document.createElement('div');
+      el.className = 'pz-p';
+      el.style.backgroundImage = `url("${this.src}")`;
+      el.style.backgroundSize = `${n * 100}% ${n * 100}%`;
+      el.style.backgroundPosition = `${(k % n) / (n - 1) * 100}% ${Math.floor(k / n) / (n - 1) * 100}%`;
+      const p = { k, el, done: false, fx: 0, fy: 0 };
+      this.pieces.push(p);
+      this.box.append(el);
+      el.addEventListener('pointerdown', e => this.drag(p, e));
+    }
+    this.layout(true);
+    this.ro = new ResizeObserver(() => this.layout(false)); this.ro.observe(this.box);
+  }
+
+  // Tablero en el centro; las piezas, repartidas a los dos lados (o arriba y abajo en vertical).
+  layout(scatter) {
+    const W = this.box.clientWidth, H = this.box.clientHeight, n = this.n;
+    if (!W || !H) return;
+    const landscape = W >= H;
+    let bw = landscape ? Math.min(W * 0.5, H * 0.92 * this.aspect) : Math.min(W * 0.92, H * 0.5 * this.aspect);
+    let bh = bw / this.aspect;
+    this.b = { x: (W - bw) / 2, y: (H - bh) / 2, w: bw, h: bh, cw: bw / n, ch: bh / n };
+    Object.assign(this.boardEl.style, { left: this.b.x + 'px', top: this.b.y + 'px', width: bw + 'px', height: bh + 'px' });
+    this.pieces.forEach((p, i) => {
+      Object.assign(p.el.style, { width: this.b.cw + 'px', height: this.b.ch + 'px' });
+      if (p.done) return this.put(p, this.slot(p.k));
+      if (scatter) {
+        // mitad a cada lado, en columna, con un poco de desorden
+        const side = i % 2, idx = Math.floor(i / 2), per = Math.ceil(this.pieces.length / 2);
+        const free = landscape ? (W - bw) / 2 : (H - bh) / 2;
+        const along = landscape ? H - this.b.ch : W - this.b.cw;
+        const a = per > 1 ? idx / (per - 1) * along : along / 2;
+        const across = Math.max(0, free - (landscape ? this.b.cw : this.b.ch)) * Math.random() * 0.8 + 6;
+        const x = landscape ? (side ? W - this.b.cw - across : across) : a;
+        const y = landscape ? a : (side ? H - this.b.ch - across : across);
+        p.fx = x / W; p.fy = y / H;
+      }
+      this.put(p, { x: p.fx * W, y: p.fy * H });
+    });
+  }
+
+  slot(k) { return { x: this.b.x + (k % this.n) * this.b.cw, y: this.b.y + Math.floor(k / this.n) * this.b.ch }; }
+  put(p, { x, y }) { p.el.style.transform = `translate(${x}px, ${y}px)`; p.x = x; p.y = y; }
+
+  drag(p, e) {
+    if (p.done) return;
+    e.preventDefault();
+    const x0 = e.clientX - p.x, y0 = e.clientY - p.y;
+    p.el.classList.add('drag'); p.el.style.zIndex = ++this.z || (this.z = 10);
+    try { p.el.setPointerCapture(e.pointerId); } catch {}
+    const move = ev => this.put(p, { x: ev.clientX - x0, y: ev.clientY - y0 });
+    const up = () => {
+      p.el.removeEventListener('pointermove', move); p.el.removeEventListener('pointerup', up); p.el.removeEventListener('pointercancel', up);
+      p.el.classList.remove('drag');
+      const s = this.slot(p.k);
+      if (Math.hypot(p.x - s.x, p.y - s.y) < Math.min(this.b.cw, this.b.ch) * 0.45) {
+        p.done = true; p.el.classList.add('done'); p.el.style.zIndex = 1;
+        this.put(p, s);
+        sfx.pop(this.pieces.filter(q => q.done).length + 1);
+        this.onPlace();
+        if (this.pieces.every(q => q.done)) setTimeout(() => { this.boardEl.classList.add('whole'); this.onWin(); }, 400);
+      } else {
+        const W = this.box.clientWidth, H = this.box.clientHeight;
+        p.fx = Math.min(Math.max(0, p.x), W - this.b.cw) / W; p.fy = Math.min(Math.max(0, p.y), H - this.b.ch) / H;
+        this.put(p, { x: p.fx * W, y: p.fy * H });
+      }
+    };
+    p.el.addEventListener('pointermove', move); p.el.addEventListener('pointerup', up); p.el.addEventListener('pointercancel', up);
+  }
+
+  destroy() { this.dead = true; this.ro?.disconnect(); }
+}

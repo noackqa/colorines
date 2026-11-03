@@ -9,7 +9,7 @@ import { SCENES } from './scenes.js';
 import { STORIES, StoryView, imgOf } from './howto.js';
 import { CATS, phraseImg } from './phrases.js';
 import { canRecord, listen, playBlob, releaseMic } from './practice.js';
-import { Memory, Match3, Blocks, Differences, Shadows } from './games.js';
+import { Memory, Match3, Blocks, Differences, Shadows, Puzzle } from './games.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -589,7 +589,7 @@ const SCREENS = {
 
   // ---------- juegos ----------
   games() {
-    const G = [['memory', '🃏', UI.memory, 'g1'], ['match3', '🍓', UI.match3, 'g2'], ['blocks', '🧱', UI.blocks, 'g3'], ['diffs', '🔍', UI.diffs, 'g4'], ['shadows', '👤', UI.shadows, 'g5']];
+    const G = [['memory', '🃏', UI.memory, 'g1'], ['match3', '🍓', UI.match3, 'g2'], ['blocks', '🧱', UI.blocks, 'g3'], ['diffs', '🔍', UI.diffs, 'g4'], ['shadows', '🔦', UI.shadows, 'g5'], ['puzzle', '🧩', UI.puzzle, 'g6']];
     const s = h(`
       <div class="screen games-menu">
         <header class="bar"><button class="back">🏠</button><span class="heading">🎲 ${t(UI.games)}</span></header>
@@ -708,6 +708,48 @@ const SCREENS = {
       },
     });
     setTimeout(() => s.isConnected && say(t(UI.shadowsAsk), state.lang), 900);
+  },
+
+  // Puzle: primero se elige el dibujo (los suyos del álbum y algunos de la app) y el tamaño.
+  puzzle(src = null) {
+    const n = store.get('pzN', 2);
+    if (!src) {
+      const mine = store.get('album', []);
+      const ours = ['stories/mariposa-6.webp', 'stories/arbol-6.webp', 'stories/tierra-2.webp', 'stories/volcan-6.webp', 'stories/pan-8.webp', 'stories/agua-1.webp'];
+      const s = h(`
+        <div class="screen game-screen">
+          <header class="bar"><button class="back">⬅️</button>
+            <span class="mem-sizes">${[2, 3].map(k => `<button class="msize pz-n ${k === n ? 'on' : ''}" data-n="${k}">${k === 2 ? '🧩🧩' : '🧩🧩🧩'}</button>`).join('')}</span>
+          </header>
+          <div class="grid pz-pick">
+            ${mine.map(u => `<button class="pz-thumb mine"><img src="${u}" alt=""></button>`).join('')}
+            ${ours.map(u => `<button class="pz-thumb"><img src="${u}" alt="" loading="lazy"></button>`).join('')}
+          </div>
+        </div>`);
+      app.append(s);
+      onTap(s.querySelector('.back'), () => go('games'));
+      s.querySelectorAll('.pz-n').forEach(b => onTap(b, () => { store.set('pzN', +b.dataset.n); go('puzzle'); }));
+      s.querySelectorAll('.pz-thumb').forEach(b => onTap(b, () => go('puzzle', b.querySelector('img').getAttribute('src'))));
+      return;
+    }
+    const s = h(`
+      <div class="screen game-screen pz-screen">
+        <header class="bar"><button class="back">⬅️</button></header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('puzzle'));
+    view = new Puzzle(s.querySelector('.game-root'), {
+      src, n,
+      onWin: () => {
+        state.stars++; store.set('stars', state.stars);
+        cheer();
+        const end = h(`<div class="st-end"><button class="again">🧩 ${t(UI.again)}</button><button class="menu">🎲</button></div>`);
+        s.append(end);
+        onTap(end.querySelector('.again'), () => go('puzzle'));
+        onTap(end.querySelector('.menu'), () => go('games'));
+      },
+    });
   },
 
   // Ajustes para mayores: se entra manteniendo pulsado ⚙️ en el inicio. Solo texto (no se dice en voz alta).

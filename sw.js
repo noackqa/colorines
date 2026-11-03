@@ -1,5 +1,5 @@
 // Funciona sin internet: guarda la app la primera vez y luego sirve desde caché.
-const VERSION = 'colorines-v24';
+const VERSION = 'colorines-v25';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/style.css',
   'js/app.js', 'js/board.js', 'js/drawings.js', 'js/i18n.js', 'js/sound.js', 'js/confetti.js', 'js/trace.js', 'js/glyphs.js',
@@ -21,6 +21,7 @@ const SHELL = [
   'phrases/bano-1.webp', 'phrases/bano-2.webp', 'phrases/bano-3.webp', 'phrases/bano-4.webp', 'phrases/bano-5.webp', 'phrases/bano-6.webp', 'phrases/casa-1.webp', 'phrases/casa-2.webp', 'phrases/casa-3.webp', 'phrases/casa-4.webp', 'phrases/casa-5.webp', 'phrases/casa-6.webp', 'audio/de-p01.mp3', 'audio/de-p02.mp3', 'audio/de-p03.mp3', 'audio/en-p01.mp3', 'audio/en-p02.mp3', 'audio/en-p03.mp3', 'audio/es-p01.mp3', 'audio/es-p02.mp3', 'audio/es-p03.mp3',
   'js/games.js', 'audio/es-q01.mp3', 'audio/en-q01.mp3', 'audio/de-q01.mp3',
   'audio/es-r01.mp3', 'audio/en-r01.mp3', 'audio/de-r01.mp3',
+  'audio/es-s01.mp3', 'audio/en-s01.mp3', 'audio/de-s01.mp3',
 ];
 
 // Lo pesado (voces y dibujos, ~70 MB) va en una caché aparte que no se borra al cambiar de

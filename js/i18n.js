@@ -48,6 +48,7 @@ export const UI = {
   blocks: { es: 'Bloques', en: 'Blocks', de: 'Bausteine' },
   diffs: { es: 'Encuentra las diferencias', en: 'Spot the difference', de: 'Finde die Unterschiede' },
   shadows: { es: 'Sombras', en: 'Shadows', de: 'Schatten' },
+  puzzle: { es: 'Puzle', en: 'Puzzle', de: 'Puzzle' },
   diffsAsk: { es: '¿Qué ha cambiado?', en: 'What has changed?', de: 'Was ist anders?' },
   shadowsAsk: { es: '¿De quién es esta sombra?', en: 'Whose shadow is this?', de: 'Wessen Schatten ist das?' },
   settings: { es: 'Ajustes para mayores', en: 'Grown-up settings', de: 'Einstellungen für Eltern' },
