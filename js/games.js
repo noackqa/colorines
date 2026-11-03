@@ -351,3 +351,118 @@ export class Blocks {
 
   destroy() { this.dead = true; clearInterval(this.tick); cancelAnimationFrame(this.raf); this.ro.disconnect(); }
 }
+
+// ---------- Encuentra las diferencias ----------
+// Dos dibujos hechos de emojis en las mismas posiciones; en el derecho hay 3 cambios:
+// otro animal, uno que falta o uno de otro color. Se toca cerca del cambio en cualquier lado.
+const SCENE_SETS = [
+  { bg: '#DFF5C8', items: ['🐄', '🐷', '🐔', '🐑', '🌻', '🚜', '🏠', '🌳', '🐴', '🐶', '🐇'] },
+  { bg: '#CDEBFF', items: ['🐠', '🐙', '🦀', '🐳', '🐚', '⭐', '🐬', '🦈', '🐢', '🦑', '🐡'] },
+  { bg: '#FFE6F2', items: ['🌸', '🦋', '🐝', '🐞', '🌷', '🍄', '🐌', '🌼', '🐛', '🌳', '🐸'] },
+  { bg: '#FFF1C9', items: ['🚗', '🚌', '🚲', '🏠', '🚦', '🌳', '🐕', '🎈', '🚒', '🛴', '🚕'] },
+];
+
+export class Differences {
+  constructor(root, { count = 3, onFind = () => {}, onWin = () => {} }) {
+    this.onFind = onFind; this.onWin = onWin;
+    const set = SCENE_SETS[rnd(SCENE_SETS.length)];
+    const pool = shuffle(set.items.slice());
+    // 3 filas × 4 columnas con un poco de desorden
+    const slots = [];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) slots.push({ x: 13 + c * 24.5 + (rnd(9) - 4), y: 18 + r * 32 + (rnd(9) - 4), s: 0.9 + rnd(4) / 10 });
+    const used = shuffle(slots).slice(0, 10).map((p, i) => ({ ...p, e: pool[i % pool.length] }));
+    const spare = [...pool.slice(10), ...shuffle(SCENE_SETS.flatMap(x => x.items))].filter(e => !used.some(u => u.e === e));
+    const types = shuffle(['swap', 'gone', 'color', 'swap', 'color']).slice(0, count);
+    this.diffs = shuffle(used.map((_, i) => i)).slice(0, count).map((i, k) => ({ i, type: types[k], found: false }));
+    const right = used.map((u, i) => {
+      const d = this.diffs.find(d => d.i === i);
+      if (!d) return u;
+      if (d.type === 'gone') return null;
+      if (d.type === 'swap') return { ...u, e: spare.shift() };
+      return { ...u, color: true };
+    });
+    this.used = used;
+    const panel = (items, side) => `<div class="df-panel" data-side="${side}" style="--bg:${set.bg}">${items.map(u => u ? `<span class="df-it${u.color ? ' df-color' : ''}" style="left:${u.x}%;top:${u.y}%;--s:${u.s}">${u.e}</span>` : '').join('')}</div>`;
+    root.innerHTML = `<div class="df">${panel(used, 'l')}${panel(right, 'r')}</div>`;
+    this.panels = [...root.querySelectorAll('.df-panel')];
+    this.panels.forEach(p => p.addEventListener('click', e => this.tap(p, e)));
+  }
+
+  tap(p, e) {
+    const r = p.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 100, y = (e.clientY - r.top) / r.height * 100;
+    let best = null, bd = 14;
+    for (const d of this.diffs) {
+      if (d.found) continue;
+      const u = this.used[d.i], dist = Math.hypot((u.x - x), (u.y - y) * r.height / r.width);
+      if (dist < bd) { bd = dist; best = d; }
+    }
+    if (!best) return;
+    best.found = true;
+    const u = this.used[best.i];
+    this.panels.forEach(pp => pp.insertAdjacentHTML('beforeend', `<i class="df-ring" style="left:${u.x}%;top:${u.y}%"></i>`));
+    sfx.pop(this.diffs.filter(d => d.found).length + 2);
+    this.onFind();
+    if (this.diffs.every(d => d.found)) setTimeout(() => this.onWin(), 700);
+  }
+
+  // Pista: un brillo suave encima de una diferencia que falta por encontrar.
+  hint() {
+    const d = this.diffs.find(d => !d.found);
+    if (!d) return;
+    const u = this.used[d.i];
+    this.panels[1].insertAdjacentHTML('beforeend', `<i class="df-hint" style="left:${u.x}%;top:${u.y}%"></i>`);
+    const el = this.panels[1].lastElementChild;
+    setTimeout(() => el.remove(), 2200);
+  }
+
+  destroy() {}
+}
+
+// ---------- Sombras ----------
+// Una sombra grande y tres dibujos: ¿de quién es? Al acertar la sombra se llena de color.
+const SHADOW_POOL = ['🐘', '🦒', '🐇', '🐢', '🦀', '🐙', '🐌', '🦋', '🐟', '🐈', '🐓', '🦆', '🚲', '🚗', '✈️', '⛵', '🎸', '☂️', '🍌', '🍐', '🍄', '🌵', '⭐', '🌙', '🔑', '🎈', '🦕', '🐳', '🦔', '🚂'];
+
+export class Shadows {
+  constructor(root, { rounds = 6, onRight = () => {}, onWin = () => {} }) {
+    this.root = root; this.rounds = rounds; this.onRight = onRight; this.onWin = onWin;
+    this.order = shuffle(SHADOW_POOL.slice()).slice(0, rounds);
+    this.k = 0;
+    root.innerHTML = `
+      <div class="sh">
+        <div class="sh-dots">${this.order.map(() => '<i></i>').join('')}</div>
+        <div class="sh-target"></div>
+        <div class="sh-opts"></div>
+      </div>`;
+    this.target = root.querySelector('.sh-target'); this.opts = root.querySelector('.sh-opts');
+    this.dots = [...root.querySelectorAll('.sh-dots i')];
+    this.round();
+  }
+
+  round() {
+    const t = this.order[this.k];
+    const others = shuffle(SHADOW_POOL.filter(e => e !== t)).slice(0, 2);
+    this.target.textContent = t; this.target.classList.remove('lit');
+    this.opts.innerHTML = shuffle([t, ...others]).map(e => `<button class="sh-opt">${e}</button>`).join('');
+    this.busy = false;
+    this.opts.querySelectorAll('.sh-opt').forEach(b => b.addEventListener('click', () => this.pick(b, t)));
+  }
+
+  pick(b, t) {
+    if (this.busy) return;
+    if (b.textContent !== t) {
+      sfx.undo();
+      b.classList.remove('no'); void b.offsetWidth; b.classList.add('no');
+      return;
+    }
+    this.busy = true;
+    sfx.pop(this.k + 2);
+    b.classList.add('yes'); this.target.classList.add('lit');
+    this.dots[this.k].classList.add('on');
+    this.onRight();
+    setTimeout(() => {
+      if (++this.k >= this.rounds) this.onWin(); else this.round();
+    }, 1300);
+  }
+
+  destroy() {}
+}

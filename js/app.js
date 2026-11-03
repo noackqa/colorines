@@ -9,7 +9,7 @@ import { SCENES } from './scenes.js';
 import { STORIES, StoryView, imgOf } from './howto.js';
 import { CATS, phraseImg } from './phrases.js';
 import { canRecord, listen, playBlob, releaseMic } from './practice.js';
-import { Memory, Match3, Blocks } from './games.js';
+import { Memory, Match3, Blocks, Differences, Shadows } from './games.js';
 import { NUMBER_NAMES, LETTER_NAMES, alphabet, glyphStrokes } from './glyphs.js';
 
 // ---------- estado guardado ----------
@@ -589,7 +589,7 @@ const SCREENS = {
 
   // ---------- juegos ----------
   games() {
-    const G = [['memory', '🃏', UI.memory, 'g1'], ['match3', '🍓', UI.match3, 'g2'], ['blocks', '🧱', UI.blocks, 'g3']];
+    const G = [['memory', '🃏', UI.memory, 'g1'], ['match3', '🍓', UI.match3, 'g2'], ['blocks', '🧱', UI.blocks, 'g3'], ['diffs', '🔍', UI.diffs, 'g4'], ['shadows', '👤', UI.shadows, 'g5']];
     const s = h(`
       <div class="screen games-menu">
         <header class="bar"><button class="back">🏠</button><span class="heading">🎲 ${t(UI.games)}</span></header>
@@ -662,6 +662,52 @@ const SCREENS = {
       },
       onFull: () => { sfx.sparkle(); say(PRAISE[state.lang][0], state.lang); },
     });
+  },
+
+  diffs() {
+    const s = h(`
+      <div class="screen game-screen">
+        <header class="bar"><button class="back">⬅️</button><span class="df-count">${'<i>🔍</i>'.repeat(3)}</span><button class="hint" aria-label="pista">💡</button></header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('games'));
+    const marks = [...s.querySelectorAll('.df-count i')];
+    let n = 0;
+    view = new Differences(s.querySelector('.game-root'), {
+      onFind: () => marks[n++]?.classList.add('on'),
+      onWin: () => {
+        state.stars++; store.set('stars', state.stars);
+        cheer();
+        const end = h(`<div class="st-end"><button class="again">🔁 ${t(UI.again)}</button><button class="menu">🎲</button></div>`);
+        s.append(end);
+        onTap(end.querySelector('.again'), () => go('diffs'));
+        onTap(end.querySelector('.menu'), () => go('games'));
+      },
+    });
+    onTap(s.querySelector('.hint'), () => view.hint());
+    setTimeout(() => s.isConnected && say(t(UI.diffsAsk), state.lang), 900);
+  },
+
+  shadows() {
+    const s = h(`
+      <div class="screen game-screen">
+        <header class="bar"><button class="back">⬅️</button></header>
+        <div class="game-root"></div>
+      </div>`);
+    app.append(s);
+    onTap(s.querySelector('.back'), () => go('games'));
+    view = new Shadows(s.querySelector('.game-root'), {
+      onWin: () => {
+        state.stars++; store.set('stars', state.stars);
+        cheer();
+        const end = h(`<div class="st-end"><button class="again">🔁 ${t(UI.again)}</button><button class="menu">🎲</button></div>`);
+        s.append(end);
+        onTap(end.querySelector('.again'), () => go('shadows'));
+        onTap(end.querySelector('.menu'), () => go('games'));
+      },
+    });
+    setTimeout(() => s.isConnected && say(t(UI.shadowsAsk), state.lang), 900);
   },
 
   // Ajustes para mayores: se entra manteniendo pulsado ⚙️ en el inicio. Solo texto (no se dice en voz alta).
